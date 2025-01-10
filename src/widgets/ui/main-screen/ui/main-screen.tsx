@@ -6,22 +6,25 @@ export const MainScreen = () => {
   const navigate = useNavigate();
 
   return (
-    <main className="w-full h-[100vh]  flex flex-col items-center justify-center">
-      <h1 className="text-dark xl:text-[40px] 2xl:text-[48px] font-bold">
+    <main className="w-full h-[100vh] flex flex-col items-center justify-center px-4">
+      {/* Заголовок */}
+      <h1 className="text-dark text-[24px] sm:text-[32px] md:text-[40px] 2xl:text-[48px] font-bold text-center">
         Добро пожаловать в наш каталог недвижимости!
       </h1>
-      <span className="text-dark text-[20px] mt-4">
+      {/* Описание */}
+      <span className="text-dark text-[16px] sm:text-[18px] md:text-[20px] mt-4 text-center">
         Удобный инструмент для выбора дома или участка вашей мечты.
       </span>
-      <div className="flex items-center justify-center gap-5 mt-8">
+      {/* Карточки */}
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-5 mt-8">
         <CatalogueCard
           onClick={() => navigate("/houses-catalogue")}
           name="Каталог домов"
           icon={
             <HouseIcon
               className="text-green"
-              width={96}
-              height={96}
+              width={64}
+              height={64}
               strokeWidth={1}
             />
           }
@@ -33,8 +36,8 @@ export const MainScreen = () => {
           icon={
             <MapPinHouse
               className="text-green"
-              width={96}
-              height={96}
+              width={64}
+              height={64}
               strokeWidth={1}
             />
           }
