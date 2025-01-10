@@ -11,6 +11,8 @@ interface FileUploadProps {
 export function FileUpload({ onChange }: FileUploadProps) {
   const [files, setFiles] = useState<File[]>([]);
 
+  console.log(files);
+
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       setFiles(acceptedFiles);

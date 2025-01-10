@@ -12,10 +12,6 @@ const propertyTypes = [
 ];
 
 export const AddObjectScreen = () => {
-  function handleSubmit() {
-    console.log("lol");
-  }
-
   return (
     <div className="min-h-screen bg-[#fafafa] p-6">
       <div className="max-w-7xl mx-auto space-y-8">
