@@ -17,6 +17,8 @@ export const ObjectInnerScreen = () => {
   const { openModal } = useShareModalStore();
   const [isFavorite, setIsFavorite] = useState(false);
 
+  console.log(isFavorite);
+
   const handleAddToFavorites = () => {
     setIsFavorite(true);
     Swal.fire({
