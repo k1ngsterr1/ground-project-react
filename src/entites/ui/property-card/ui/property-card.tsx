@@ -1,5 +1,6 @@
-import React from "react";
+import { useComparisonStore } from "@/entites/model/comparison-store/use-comparison-store";
 import { GitCompare } from "lucide-react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
 interface CardProps {
@@ -7,6 +8,7 @@ interface CardProps {
   title: string;
   description: string;
   price: number;
+  id: number;
 }
 
 export const PropertyCard: React.FC<CardProps> = ({
@@ -14,8 +16,21 @@ export const PropertyCard: React.FC<CardProps> = ({
   title,
   description,
   price,
+  id,
 }) => {
   const navigate = useNavigate();
+  const { addId, removeId, selectedIds } = useComparisonStore();
+
+  const isSelected = selectedIds.includes(id);
+
+  const handleCompareClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isSelected) {
+      removeId(id);
+    } else {
+      addId(id);
+    }
+  };
 
   return (
     <div
@@ -32,7 +47,17 @@ export const PropertyCard: React.FC<CardProps> = ({
           <p className="text-[#00a859] text-[20px] font-semibold">
             {new Intl.NumberFormat("ru-RU").format(price)}₽
           </p>
-          <GitCompare className="text-[#E7E7E7] transition-colors cursor-pointer hover:text-green" />
+          <div className="relative group">
+            <GitCompare
+              onClick={handleCompareClick}
+              className={`transition-colors cursor-pointer ${
+                isSelected ? "text-green" : "text-[#E7E7E7]"
+              } hover:text-green`}
+            />
+            <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-black text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity">
+              {isSelected ? "Убрать" : "Сравнить"}
+            </div>
+          </div>
         </div>
       </div>
     </div>

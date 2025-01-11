@@ -20,7 +20,10 @@
     "react-dom": "^18.3.1",
     "react-dropzone": "^14.3.5",
     "react-router-dom": "^7.1.1",
-    "tailwindcss": "^3.4.17"
+    "react-toastify": "^11.0.2",
+    "sweetalert2": "^11.15.10",
+    "tailwindcss": "^3.4.17",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
