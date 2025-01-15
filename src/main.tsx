@@ -9,6 +9,7 @@ import { LoginPage } from "./pages/login-page/login-page.tsx";
 import { MainPage } from "./pages/main-page/main-page.tsx";
 import { ObjectInnerPage } from "./pages/object-inner-page/object-inner-page.tsx";
 import { RegistrationPage } from "./pages/registration-page/registration-page.tsx";
+import { AuthLayout } from "./shared/layouts/auth-layout.tsx";
 import ClientLayout from "./shared/layouts/client-layout.tsx";
 
 createRoot(document.getElementById("root")!).render(
@@ -20,7 +21,14 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/houses-catalogue" element={<HousesCataloguePage />} />
           <Route path="/comparison" element={<ComparisonPage />} />
           <Route path="/houses-catalogue/:id" element={<ObjectInnerPage />} />
-          <Route path="/add-object" element={<AddObjectPage />} />
+          <Route
+            path="/add-object"
+            element={
+              <AuthLayout allowedRoles={["admin"]}>
+                <AddObjectPage />
+              </AuthLayout>
+            }
+          />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegistrationPage />} />
         </Routes>

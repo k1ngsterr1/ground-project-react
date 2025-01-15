@@ -48,12 +48,15 @@ export const PropertyCard: React.FC<CardProps> = ({
             {new Intl.NumberFormat("ru-RU").format(price)}₽
           </p>
           <div className="relative group">
-            <GitCompare
-              onClick={handleCompareClick}
-              className={`transition-colors cursor-pointer ${
-                isSelected ? "text-green" : "text-[#E7E7E7]"
-              } hover:text-green`}
-            />
+            <div className="flex flex-col items-center justify-center">
+              <GitCompare
+                onClick={handleCompareClick}
+                className={`transition-colors cursor-pointer ${
+                  isSelected ? "text-green" : "text-[#E7E7E7]"
+                } hover:text-green`}
+              />
+              <span className="text-green text-[14px]">Сравнить</span>
+            </div>
             <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-black text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity">
               {isSelected ? "Убрать" : "Сравнить"}
             </div>
