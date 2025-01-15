@@ -3,9 +3,9 @@ import ClientLayout from "./shared/layouts/client-layout";
 
 function App() {
   return (
-    <>
-        <MainScreen />
-    </>
+    <ClientLayout>
+      <MainScreen />
+    </ClientLayout>
   );
 }
 

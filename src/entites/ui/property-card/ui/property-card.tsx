@@ -1,7 +1,10 @@
 import { useComparisonStore } from "@/entites/model/comparison-store/use-comparison-store";
-import { GitCompare } from "lucide-react";
-import React from "react";
 import { useNavigate } from "react-router-dom";
+
+import { useAddComparison } from "@/entites/model/comparison-store/api/use-add-comparison";
+import { useDeleteComparison } from "@/entites/model/comparison-store/api/use-delete-comparison";
+
+import { GitCompare } from "lucide-react";
 
 interface CardProps {
   id: number;
@@ -19,16 +22,24 @@ export const PropertyCard: React.FC<CardProps> = ({
   id,
 }) => {
   const navigate = useNavigate();
-  const { addId, removeId, selectedIds } = useComparisonStore();
+  const { selectedIds } = useComparisonStore();
+  const { mutate: addComparison } = useAddComparison();
+  const { mutate: deleteComparison } = useDeleteComparison();
 
   const isSelected = selectedIds.includes(id);
 
   const handleCompareClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (isSelected) {
-      removeId(id);
+      deleteComparison({
+        comparisonId: id,
+        propertyId: id
+      });
     } else {
-      addId(id);
+      addComparison({
+        comparisonId: id,
+        propertyId: id
+      });
     }
   };
 
@@ -51,9 +62,8 @@ export const PropertyCard: React.FC<CardProps> = ({
             <div className="flex flex-col items-center justify-center">
               <GitCompare
                 onClick={handleCompareClick}
-                className={`transition-colors cursor-pointer ${
-                  isSelected ? "text-green" : "text-[#E7E7E7]"
-                } hover:text-green`}
+                className={`transition-colors cursor-pointer ${isSelected ? "text-green" : "text-[#E7E7E7]"
+                  } hover:text-green`}
               />
               <span className="text-green text-[14px]">Сравнить</span>
             </div>
