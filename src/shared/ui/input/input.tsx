@@ -1,19 +1,35 @@
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+type InputProps = {
   label?: string;
-}
+  value: string;
+  onChange: (value: string) => void;
+  type?: string;
+  placeholder?: string;
+  error?: string;
+};
 
-export function Input({ label, className, ...props }: InputProps) {
+export const Input: React.FC<InputProps> = ({
+  label,
+  value,
+  onChange,
+  type = "text",
+  placeholder,
+  error,
+}) => {
   return (
-    <div className="space-y-2">
+    <div>
       {label && (
-        <label className="block text-[#2f2f2f] text-sm font-medium">
-          {label}
-        </label>
+        <label className="block text-sm font-medium mb-1">{label}</label>
       )}
       <input
-        className="w-full px-3 py-2 border border-gray-200 rounded-md text-[#2f2f2f] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00a859] focus:border-transparent"
-        {...props}
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className={`border rounded p-2 w-full ${
+          error ? "border-red-500" : "border-gray-300"
+        }`}
       />
+      {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
     </div>
   );
-}
+};

@@ -1,6 +1,6 @@
+import { HouseIcon, MapPinHouse } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { CatalogueCard } from "../../../../entites/ui/catalogue-card/ui/catalogue-card";
-import { HouseIcon, MapPinHouse } from "lucide-react";
 
 export const MainScreen = () => {
   const navigate = useNavigate();

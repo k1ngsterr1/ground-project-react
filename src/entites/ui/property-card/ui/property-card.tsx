@@ -4,16 +4,16 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 interface CardProps {
+  id: number;
   image: string;
-  title: string;
+  name: string;
   description: string;
   price: number;
-  id: number;
 }
 
 export const PropertyCard: React.FC<CardProps> = ({
   image,
-  title,
+  name,
   description,
   price,
   id,
@@ -34,14 +34,14 @@ export const PropertyCard: React.FC<CardProps> = ({
 
   return (
     <div
-      onClick={() => navigate("/houses-catalogue/1")}
+      onClick={() => navigate(`/houses-catalogue/${id}`)}
       className="bg-[#ffffff] min-h-[390px] cursor-pointer rounded-lg shadow-lg transition-all hover:shadow-xl overflow-hidden"
     >
-      <div className="relative">
-        <img src={image} alt={title} className="object-cover" />
+      <div className="relative w-full">
+        <img src={image} alt={name} className="object-cover w-full" />
       </div>
       <div className="p-4 space-y-2">
-        <h3 className="text-[22px] font-semibold text-[#2f2f2f]">{title}</h3>
+        <h3 className="text-[22px] font-semibold text-[#2f2f2f]">{name}</h3>
         <p className="text-[#2f2f2f]/70 text-[16px] ">{description}</p>
         <div className="flex items-center justify-between">
           <p className="text-[#00a859] text-[20px] font-semibold">

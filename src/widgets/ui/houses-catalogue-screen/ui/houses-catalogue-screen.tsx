@@ -1,74 +1,17 @@
-import img from "@/assets/catalogue_mockup.png";
 import { useComparisonStore } from "@/entites/model/comparison-store/use-comparison-store";
+import { useGetProperties } from "@/entites/model/properties/use-get-properties";
 import { FilterButton } from "@/entites/ui/filter-button/ui/filter-button";
 import { PropertyCard } from "@/entites/ui/property-card/ui/property-card";
+import { SkeletonPropertyCard } from "@/entites/ui/skeleton-property-card/ui/skeleton-property-card";
 import { Breadcrumb } from "@/shared/ui/breadcrumbs/breadcrumbs";
 import { Button } from "@/shared/ui/button/button";
 import { Banknote, MapPin, Square } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const houses = [
-  {
-    id: 1,
-    image: img,
-    title: "Скандинавский уют",
-    description: "Современный дом в черте города, стильный интерьер и сад.",
-    price: 15200000,
-  },
-  {
-    id: 2,
-    image: img,
-    title: "Скандинавский уют",
-    description: "Современный дом в черте города, стильный интерьер и сад.",
-    price: 15200000,
-  },
-  {
-    id: 3,
-    image: img,
-    title: "Скандинавский уют",
-    description: "Современный дом в черте города, стильный интерьер и сад.",
-    price: 15200000,
-  },
-  {
-    id: 4,
-    image: img,
-    title: "Скандинавский уют",
-    description: "Современный дом в черте города, стильный интерьер и сад.",
-    price: 15200000,
-  },
-  {
-    id: 5,
-    image: img,
-    title: "Скандинавский уют",
-    description: "Современный дом в черте города, стильный интерьер и сад.",
-    price: 15200000,
-  },
-  {
-    id: 6,
-    image: img,
-    title: "Скандинавский уют",
-    description: "Современный дом в черте города, стильный интерьер и сад.",
-    price: 15200000,
-  },
-  {
-    id: 7,
-    image: img,
-    title: "Скандинавский уют",
-    description: "Современный дом в черте города, стильный интерьер и сад.",
-    price: 15200000,
-  },
-  {
-    id: 8,
-    image: img,
-    title: "Скандинавский уют",
-    description: "Современный дом в черте города, стильный интерьер и сад.",
-    price: 15200000,
-  },
-];
-
 export const HousesCatalogueScreen = () => {
   const navigate = useNavigate();
   const { selectedIds } = useComparisonStore();
+  const { data: properties, isLoading } = useGetProperties();
   const breadcrumbItems = [
     { label: "Главная", href: "/" },
     { label: "Каталог домов", href: "/houses-catalogue", isActive: true },
@@ -100,9 +43,20 @@ export const HousesCatalogueScreen = () => {
           </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-          {houses.map((house) => (
-            <PropertyCard key={house.id} {...house} />
-          ))}
+          {isLoading
+            ? Array.from({ length: 8 }).map((_, index) => (
+                <SkeletonPropertyCard key={index} />
+              ))
+            : properties?.map((house) => (
+                <PropertyCard
+                  key={house.id}
+                  id={house.id}
+                  image={house.image[0]}
+                  name={house.name}
+                  description={house.description}
+                  price={house.price}
+                />
+              ))}
         </div>
       </div>
       <div className="w-full flex items-center justify-center mt-8">
