@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
-import { useAddProperty } from "@/entites/model/properties/api/use-add-property";
+import { useAddProperty } from "@/entites/model/favorites/use-add-property";
 
 
 const propertyTypes = [

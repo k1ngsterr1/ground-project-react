@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getFavorites } from "./get-favorites";
-import { IGetPropertiesRDO } from "../rdo/get-properties.rdo";
+import { IGetPropertiesRDO } from "../properties/rdo/get-properties.rdo";
 
 interface FavoriteItem {
   id: number;
@@ -10,9 +10,9 @@ interface FavoriteItem {
 }
 
 export const useGetFavorites = (userId: string) => {
-    return useQuery<FavoriteItem[], Error>({
-        queryKey: ["favorites", userId],
-        queryFn: () => getFavorites(userId),
-        enabled: !!userId, // Only run query if userId exists
-    });
+  return useQuery<FavoriteItem[], Error>({
+    queryKey: ["favorites", userId],
+    queryFn: () => getFavorites(userId),
+    enabled: !!userId,
+  });
 };

@@ -9,11 +9,13 @@ import { Breadcrumb } from "@/shared/ui/breadcrumbs/breadcrumbs";
 import { Button } from "@/shared/ui/button/button";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-
-import { useAddFavorite } from "@/entites/model/properties/api/use-add-favorite";
-import { useGetMe } from "@/entites/model/user/user-auth/use-get-me";
-import { useGetFavorites } from "@/entites/model/properties/api/use-get-favorites";
 import { useParams } from "react-router-dom";
+
+import { useAddFavorite } from "@/entites/model/favorites/use-add-favorite";
+import { useGetMe } from "@/entites/model/user/user-auth/use-get-me";
+import { useGetFavorites } from "@/entites/model/favorites/use-get-favorites";
+import { useDeleteFavorite } from "@/entites/model/favorites/use-delete-favorite";
+
 import { Heart, HeartOff } from "lucide-react";
 
 const images = Array(7).fill(image);
@@ -24,6 +26,7 @@ export const ObjectInnerScreen = () => {
   const { id: propertyId } = useParams();
   const { data: userData } = useGetMe();
   const { data: favoritesData } = useGetFavorites(userData?.id?.toString() || "");
+  const { mutate: deleteFavorite } = useDeleteFavorite();
 
   const isInFavorites = favoritesData?.some(
     (favorite) => favorite.propertyId.toString() === propertyId
@@ -58,10 +61,11 @@ export const ObjectInnerScreen = () => {
     }
 
     if (isInFavorites) {
+      deleteFavorite({ userId, propertyId });
       Swal.fire({
-        icon: "warning",
-        title: "Уже в избранном",
-        text: "Этот объект уже добавлен в избранное",
+        icon: "success",
+        title: "Удалено из избранного",
+        text: "Объект успешно удален из избранного",
         showConfirmButton: false,
         timer: 3000,
         toast: true,
@@ -109,7 +113,7 @@ export const ObjectInnerScreen = () => {
             <PriceTab />
             <div className="flex flex-col sm:flex-row items-center gap-4">
               <Button
-                className="w-full sm:w-[240px] h-[45px]"
+                className="w-full sm:w-[240px] h-[45px] text-sm"
                 variant="blue"
                 onClick={() => openModal()}
               >
@@ -120,11 +124,11 @@ export const ObjectInnerScreen = () => {
                 variant={isInFavorites ? "transparent_red" : "transparent_blue"}
                 onClick={handleAddToFavorites}
               >
-                <div className="flex items-center justify-center gap-2">
+                <div className="flex items-center justify-center gap-2 text-sm">
                   {isInFavorites ? (
                     <>
                       <HeartOff className="w-5 h-5" />
-                      Уже в избранном
+                      Удалить из избранного
                     </>
                   ) : (
                     <>
@@ -135,7 +139,6 @@ export const ObjectInnerScreen = () => {
                 </div>
               </Button>
             </div>
-            {/* Agent Card */}
             <BrokerTab />
           </div>
         </div>

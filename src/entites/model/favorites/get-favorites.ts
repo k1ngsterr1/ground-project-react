@@ -1,7 +1,7 @@
 "use client";
 
 import { apiClient } from "@/shared/config/apiClient";
-import { IGetPropertiesRDO } from "../rdo/get-properties.rdo";
+import { IGetPropertiesRDO } from "../properties/rdo/get-properties.rdo";
 
 interface FavoriteItem {
     id: number;

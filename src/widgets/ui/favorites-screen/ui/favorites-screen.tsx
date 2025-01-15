@@ -1,5 +1,5 @@
 import { Breadcrumb } from "@/shared/ui/breadcrumbs/breadcrumbs";
-import { useGetFavorites } from "@/entites/model/properties/api/use-get-favorites";
+import { useGetFavorites } from "@/entites/model/favorites/use-get-favorites";
 import { useGetMe } from "@/entites/model/user/user-auth/use-get-me";
 import { PropertyCard } from "@/entites/ui/property-card/ui/property-card";
 import { SkeletonPropertyCard } from "@/entites/ui/skeleton-property-card/ui/skeleton-property-card";
