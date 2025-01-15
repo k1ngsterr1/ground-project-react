@@ -7,18 +7,70 @@ import { ObjectInfo } from "@/features/ui/object-info/ui/object-info";
 import { PriceTab } from "@/features/ui/price-tab/ui/price-tab";
 import { Breadcrumb } from "@/shared/ui/breadcrumbs/breadcrumbs";
 import { Button } from "@/shared/ui/button/button";
-import { useState } from "react";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
+
+import { useAddFavorite } from "@/entites/model/properties/api/use-add-favorite";
+import { useGetMe } from "@/entites/model/user/user-auth/use-get-me";
+import { useGetFavorites } from "@/entites/model/properties/api/use-get-favorites";
+import { useParams } from "react-router-dom";
+import { Heart, HeartOff } from "lucide-react";
 
 const images = Array(7).fill(image);
 
 export const ObjectInnerScreen = () => {
   const { openModal } = useShareModalStore();
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { mutate: addFavorite } = useAddFavorite();
+  const { id: propertyId } = useParams();
+  const { data: userData } = useGetMe();
+  const { data: favoritesData } = useGetFavorites(userData?.id?.toString() || "");
+
+  const isInFavorites = favoritesData?.some(
+    (favorite) => favorite.propertyId.toString() === propertyId
+  );
 
   const handleAddToFavorites = () => {
-    setIsFavorite(true);
+    const userId = userData?.id.toString();
+    if (!userId) {
+      Swal.fire({
+        icon: "error",
+        title: "Ошибка",
+        text: "Необходимо авторизоваться",
+        showConfirmButton: false,
+        timer: 3000,
+        toast: true,
+        position: "bottom-right",
+      });
+      return;
+    }
+
+    if (!userId || !propertyId) {
+      Swal.fire({
+        icon: "error",
+        title: "Ошибка",
+        text: "Произошла ошибка при добавлении в избранное",
+        showConfirmButton: false,
+        timer: 3000,
+        toast: true,
+        position: "bottom-right",
+      });
+      return;
+    }
+
+    if (isInFavorites) {
+      Swal.fire({
+        icon: "warning",
+        title: "Уже в избранном",
+        text: "Этот объект уже добавлен в избранное",
+        showConfirmButton: false,
+        timer: 3000,
+        toast: true,
+        position: "bottom-right",
+      });
+      return;
+    }
+
+    addFavorite({ userId, propertyId });
     Swal.fire({
       icon: "success",
       title: "Добавлено в избранное!",
@@ -65,11 +117,21 @@ export const ObjectInnerScreen = () => {
               </Button>
               <Button
                 className="w-full sm:w-[240px] h-[45px]"
-                variant="transparent_blue"
+                variant={isInFavorites ? "transparent_red" : "transparent_blue"}
                 onClick={handleAddToFavorites}
               >
                 <div className="flex items-center justify-center gap-2">
-                  Добавить в избранное
+                  {isInFavorites ? (
+                    <>
+                      <HeartOff className="w-5 h-5" />
+                      Уже в избранном
+                    </>
+                  ) : (
+                    <>
+                      <Heart className="w-5 h-5" />
+                      Добавить в избранное
+                    </>
+                  )}
                 </div>
               </Button>
             </div>

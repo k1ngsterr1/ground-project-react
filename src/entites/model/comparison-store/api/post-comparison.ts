@@ -1,7 +1,7 @@
 import { apiClient } from "@/shared/config/apiClient";
 
 interface Comparisons {
-    comparisonId: number;
+    comparisonId: number | null;
     propertyId: number;
 }
 

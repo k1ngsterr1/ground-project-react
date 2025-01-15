@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getProperties } from "./get-properties";
-import { IGetPropertiesRDO } from "./rdo/get-properties.rdo";
+import { IGetPropertiesRDO } from "../rdo/get-properties.rdo";
 
 export const useGetProperties = () => {
   return useQuery<IGetPropertiesRDO[], Error>({

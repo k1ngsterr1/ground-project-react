@@ -1,4 +1,5 @@
 import { login } from "@/entites/model/user/user-auth/user-auth.api";
+import { useAuthStore } from "@/entites/model/user/user-auth/use-auth-store";
 import { Button } from "@/shared/ui/button/button";
 import { Input } from "@/shared/ui/input/input";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,6 +23,7 @@ type LoginFormInputs = z.infer<typeof loginSchema>;
 
 export const LoginScreen = () => {
   const navigate = useNavigate();
+  const { setAuthorized, setType } = useAuthStore();
 
   const {
     handleSubmit,
@@ -43,6 +45,19 @@ export const LoginScreen = () => {
         password: data.password,
       });
       console.log("Login successful:", response);
+      
+      // Save auth token
+      if (response.token) {
+        localStorage.setItem('authToken', response.token);
+      }
+      
+      // Update auth store with user data
+      setAuthorized(true);
+      setType(response.role || "user");
+      
+      // Trigger a reload of user data to get the full user info including ID
+      await useAuthStore.getState().loadToken();
+      
       navigate("/"); // Redirect to the dashboard or another page
     } catch (error) {
       console.error("Login failed:", error);

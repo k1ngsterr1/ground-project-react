@@ -1,10 +1,12 @@
 import { useComparisonStore } from "@/entites/model/comparison-store/use-comparison-store";
 import { useNavigate } from "react-router-dom";
 
+import { GitCompare } from "lucide-react";
+
 import { useAddComparison } from "@/entites/model/comparison-store/api/use-add-comparison";
 import { useDeleteComparison } from "@/entites/model/comparison-store/api/use-delete-comparison";
-
-import { GitCompare } from "lucide-react";
+import { useGetComparisons } from "@/entites/model/comparison-store/api/use-get-comparisons";
+import { useGetMe } from "@/entites/model/user/user-auth/use-get-me";
 
 interface CardProps {
   id: number;
@@ -22,24 +24,54 @@ export const PropertyCard: React.FC<CardProps> = ({
   id,
 }) => {
   const navigate = useNavigate();
-  const { selectedIds } = useComparisonStore();
+
+  const { selectedIds, addId, removeId } = useComparisonStore();
   const { mutate: addComparison } = useAddComparison();
   const { mutate: deleteComparison } = useDeleteComparison();
+  const { data: meData } = useGetMe();
+  const { data: comparisons } = useGetComparisons(meData?.id?.toString() || "");
+
+  const comparisonId = comparisons?.[0]?.id ?? null;
+
+  console.log(comparisonId);
 
   const isSelected = selectedIds.includes(id);
 
   const handleCompareClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+
+    console.log('Comparison click - Current state:', {
+      comparisonId,
+      propertyId: id,
+      isSelected,
+      selectedIds
+    });
+
+    if (comparisonId === null) {
+      console.log('Cannot proceed - comparisonId is null');
+      return;
+    }
+
     if (isSelected) {
+      console.log('Removing from comparison:', {
+        comparisonId,
+        propertyId: id
+      });
       deleteComparison({
-        comparisonId: id,
+        comparisonId,
         propertyId: id
       });
+      removeId(id);
     } else {
-      addComparison({
-        comparisonId: id,
+      console.log('Adding to comparison:', {
+        comparisonId,
         propertyId: id
       });
+      addComparison({
+        comparisonId,
+        propertyId: id
+      });
+      addId(id);
     }
   };
 

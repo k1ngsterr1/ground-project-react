@@ -1,5 +1,4 @@
 import { useComparisonStore } from "@/entites/model/comparison-store/use-comparison-store";
-import { useGetProperties } from "@/entites/model/properties/use-get-properties";
 import { FilterButton } from "@/entites/ui/filter-button/ui/filter-button";
 import { PropertyCard } from "@/entites/ui/property-card/ui/property-card";
 import { SkeletonPropertyCard } from "@/entites/ui/skeleton-property-card/ui/skeleton-property-card";
@@ -7,6 +6,8 @@ import { Breadcrumb } from "@/shared/ui/breadcrumbs/breadcrumbs";
 import { Button } from "@/shared/ui/button/button";
 import { Banknote, MapPin, Square } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
+import { useGetProperties } from "@/entites/model/properties/api/use-get-properties";
 
 export const HousesCatalogueScreen = () => {
   const navigate = useNavigate();
@@ -45,18 +46,18 @@ export const HousesCatalogueScreen = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
           {isLoading
             ? Array.from({ length: 8 }).map((_, index) => (
-                <SkeletonPropertyCard key={index} />
-              ))
+              <SkeletonPropertyCard key={index} />
+            ))
             : properties?.map((house) => (
-                <PropertyCard
-                  key={house.id}
-                  id={house.id}
-                  image={house.image[0]}
-                  name={house.name}
-                  description={house.description}
-                  price={house.price}
-                />
-              ))}
+              <PropertyCard
+                key={house.id}
+                id={house.id}
+                image={house.image[0]}
+                name={house.name}
+                description={house.description}
+                price={house.price}
+              />
+            ))}
         </div>
       </div>
       <div className="w-full flex items-center justify-center mt-8">
