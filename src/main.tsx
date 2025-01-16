@@ -11,6 +11,8 @@ import { MainPage } from "./pages/main-page/main-page.tsx";
 import { ObjectInnerPage } from "./pages/object-inner-page/object-inner-page.tsx";
 import { RegistrationPage } from "./pages/registration-page/registration-page.tsx";
 import ClientLayout from "./shared/layouts/client-layout.tsx";
+import { GroundCatalogueScreen } from "./widgets/ui/ground-catalogue-screen/ui/ground-catalogue-screen.tsx";
+import { AuthLayout } from "./shared/layouts/auth-layout.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -19,15 +21,16 @@ createRoot(document.getElementById("root")!).render(
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/houses-catalogue" element={<HousesCataloguePage />} />
+          <Route path="/ground-catalogue" element={<GroundCatalogueScreen />} />
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/comparison" element={<ComparisonPage />} />
           <Route path="/houses-catalogue/:id" element={<ObjectInnerPage />} />
           <Route
             path="/add-object"
             element={
-              // <AuthLayout allowedRoles={["admin"]}>
-              <AddObjectPage />
-              // </AuthLayout>
+              <AuthLayout allowedRoles={["admin"]}>
+                <AddObjectPage />
+              </AuthLayout>
             }
           />
           <Route path="/login" element={<LoginPage />} />

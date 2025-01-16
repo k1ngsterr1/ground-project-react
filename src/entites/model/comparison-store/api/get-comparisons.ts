@@ -1,18 +1,18 @@
 "use client";
 
 import { apiClient } from "@/shared/config/apiClient";
+import { IGetComparisonRDO } from "../rdo/get-comparisons.rdo";
 
-interface ComparisonItem {
-    id?: number;
-    userId: number;
-}
-
-export const getComparisons = async (userId: string, id?: number): Promise<ComparisonItem[]> => {
-    try {
-        const { data } = await apiClient.get<ComparisonItem[]>(`/comparisons/${userId}`);
-        return data;
-    } catch (error) {
-        console.error("Failed to fetch comparisons:", error);
-        throw error;
-    }
+export const getComparisons = async (
+  userId: string
+): Promise<IGetComparisonRDO[]> => {
+  try {
+    const { data } = await apiClient.get<IGetComparisonRDO[]>(
+      `/comparisons/${userId}`
+    );
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch comparisons:", error);
+    throw error;
+  }
 };

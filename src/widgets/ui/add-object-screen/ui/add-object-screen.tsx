@@ -8,13 +8,10 @@ import Swal from "sweetalert2";
 
 import { useAddProperty } from "@/entites/model/favorites/use-add-property";
 
-
 const propertyTypes = [
   { value: "", label: "Выберите тип объекта" },
+  { value: "ground", label: "Земельный участок" },
   { value: "house", label: "Дом" },
-  { value: "apartment", label: "Квартира" },
-  { value: "land", label: "Земельный участок" },
-  { value: "commercial", label: "Коммерческая недвижимость" },
 ];
 
 export const AddObjectScreen = () => {
@@ -32,32 +29,38 @@ export const AddObjectScreen = () => {
     contact: "",
     agent: true,
     owner: false,
-    link: "",
   });
 
   const handleFileChange = (files: File[]) => {
     setSelectedFiles(files);
   };
 
-  const handleInputChange = (name: string) => (
-    valueOrEvent: string | React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
-    const value = typeof valueOrEvent === 'string'
-      ? valueOrEvent
-      : valueOrEvent.target.value;
+  const handleInputChange =
+    (name: string) =>
+    (
+      valueOrEvent:
+        | string
+        | React.ChangeEvent<
+            HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+          >
+    ) => {
+      const value =
+        typeof valueOrEvent === "string"
+          ? valueOrEvent
+          : valueOrEvent.target.value;
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    };
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
     setFormData((prev) => ({
       ...prev,
       agent: value === "agent",
-      owner: value === "owner"
+      owner: value === "owner",
     }));
   };
 
@@ -130,12 +133,14 @@ export const AddObjectScreen = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-sm">
-              <span className="text-[#2f2f2f]/70">Главная</span>
+            <div className="flex items-center gap-2 text-sm cursor-pointer">
+              <span className="text-[#2f2f2f]/70" onClick={() => navigate("/")}>
+                Главная
+              </span>
               <span className="text-[#2f2f2f]/70">•</span>
-              <span className="text-[#00a859]">Кабинет Менеджера</span>
+              <span className="text-[#00a859]">Добавить объект</span>
             </div>
-            <h1 className="text-3xl font-bold text-[#2f2f2f]">
+            <h1 className="text-3xl font-bold text-[#2f2f2f] ">
               Добавление объекта
             </h1>
           </div>
@@ -148,17 +153,13 @@ export const AddObjectScreen = () => {
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 shadow-sm space-y-6">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white rounded-lg p-6 shadow-sm space-y-6 "
+        >
           <FileUpload onChange={handleFileChange} />
 
           <div className="space-y-6">
-            <Input
-              label="Ссылка на объявление"
-              placeholder="Ссылка на объявление"
-              value={formData.link}
-              onChange={handleInputChange("link")}
-            />
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Input
                 label="Название объекта"
@@ -196,8 +197,9 @@ export const AddObjectScreen = () => {
               </label>
               <textarea
                 className="w-full px-3 py-2 border border-[#d9d9d9] rounded-md min-h-[120px] focus:outline-none focus:ring-2 focus:ring-[#00a859]"
-                placeholder="Описание"
+                placeholder="Описание (не менее 100 символов)"
                 value={formData.description}
+                minLength={100}
                 onChange={handleInputChange("description")}
               />
             </div>

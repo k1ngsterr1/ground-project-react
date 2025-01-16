@@ -3,6 +3,7 @@
 import { useAuthStore } from "@/entites/model/user/user-auth/use-auth-store";
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Spinner } from "../ui/spinner/spinner";
 
 export const AuthLayout: React.FC<{
   allowedRoles: string[];
@@ -14,20 +15,25 @@ export const AuthLayout: React.FC<{
 
   useEffect(() => {
     const checkAuth = async () => {
-      const isValid = await loadToken();
-      if (!isValid || !allowedRoles.includes(type)) {
-        const loginPath = allowedRoles.includes("admin")
-          ? "/"
-          : "/manager/login";
-        navigate(loginPath, { state: { from: location }, replace: true });
-      }
+      await loadToken(); // Ensure the token and user type are updated
     };
 
     checkAuth();
-  }, [allowedRoles, type, loadToken, navigate, location]);
+  }, [loadToken]);
+
+  useEffect(() => {
+    if (!isLoading && (!isAuthorized || !allowedRoles.includes(type))) {
+      const loginPath = allowedRoles.includes("admin") ? "/" : "/login";
+      navigate(loginPath, { state: { from: location }, replace: true });
+    }
+  }, [allowedRoles, type, isAuthorized, isLoading, navigate, location]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <Spinner size={80} color="#00A859" /> {/* Blue spinner */}
+      </div>
+    );
   }
 
   if (!isAuthorized || !allowedRoles.includes(type)) {

@@ -1,6 +1,11 @@
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   fullWidth?: boolean;
-  variant?: "outline" | "filled" | "blue" | "transparent_blue" | "transparent_red";
+  variant?:
+    | "outline"
+    | "filled"
+    | "blue"
+    | "transparent_blue"
+    | "transparent_red";
 }
 
 export function Button({
@@ -22,13 +27,14 @@ export function Button({
     transparent:
       "bg-transparent text-blue border border-blue hover:bg-blue/10 focus:ring-blue",
     transparent_red:
-      "bg-transparent text-red border border-red hover:bg-red/10 focus:ring-red",
+      "bg-transparent text-red-500 border border-red-500 hover:bg-red-500/10 focus:ring-red",
   };
 
   return (
     <button
-      className={`${baseStyles} ${variantStyles[variant]} ${fullWidth ? "w-full" : ""
-        } ${className}`}
+      className={`${baseStyles} ${variantStyles[variant]} ${
+        fullWidth ? "w-full" : ""
+      } ${className}`}
       {...props}
     />
   );

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { logout } from "./user-auth.api";
+import { apiClient } from "@/shared/config/apiClient";
 
 interface AuthState {
   isAuthorized: boolean;
@@ -12,29 +13,27 @@ interface AuthState {
   loadToken: () => Promise<boolean>;
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
+export const useAuthStore = create<AuthState>((set) => ({
   isAuthorized: false,
   type: "user", // Default role
   isLoading: true,
 
   // Fetch user data and update the store
   loadToken: async () => {
+    set({ isLoading: true }); // Explicitly set loading to true
     try {
-      const response = await fetch("/api/auth/me", {
-        method: "GET",
-        credentials: "include", // Include cookies for session management
+      const response = await apiClient.get("/users/info/me");
+      const user = await response;
+
+      set({
+        isAuthorized: true,
+        type: user.data.role,
+        isLoading: false, // Finalize loading
       });
-
-      if (!response.ok) {
-        throw new Error("Not authorized");
-      }
-
-      const user = await response.json();
-      set({ isAuthorized: true, type: user.role, isLoading: false }); // Set role and authorization status
       return true;
     } catch (error: any) {
-      console.error("Authorization failed:", error.message);
-      set({ isAuthorized: false, isLoading: false });
+      console.error("Authorization failed:", error);
+      set({ isAuthorized: false, isLoading: false }); // Ensure loading is finalized
       return false;
     }
   },
@@ -43,19 +42,19 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ type });
   },
 
-  setAuthorized: (isAuthorized) => set({ isAuthorized, isLoading: false }),
+  setAuthorized: (isAuthorized) => set({ isAuthorized, isLoading: false }), // Reset loading when setting authorization
 
-  setLoading: (isLoading) => set({ isLoading }),
+  setLoading: (isLoading) => set({ isLoading }), // Simple setter for loading state
 
   logout: async () => {
-    set({ isLoading: true });
+    set({ isLoading: true }); // Set loading state during logout
     try {
-      await logout(); // Call your logout API or logic
+      await logout(); // Call your logout API
       set({ isAuthorized: false, type: "user" }); // Reset role and authorization
     } catch (error: any) {
       console.error("Logout failed:", error.message);
     } finally {
-      set({ isLoading: false });
+      set({ isLoading: false }); // Ensure loading state is finalized
     }
   },
 }));

@@ -9,17 +9,17 @@ import { useNavigate } from "react-router-dom";
 
 import { useGetProperties } from "@/entites/model/properties/api/use-get-properties";
 
-export const HousesCatalogueScreen = () => {
+export const GroundCatalogueScreen = () => {
   const navigate = useNavigate();
   const { selectedIds } = useComparisonStore();
   const { data: properties, isLoading } = useGetProperties();
   const breadcrumbItems = [
     { label: "Главная", href: "/" },
-    { label: "Каталог домов", href: "/houses-catalogue", isActive: true },
+    { label: "Каталог участков", href: "/ground-catalogue", isActive: true },
   ];
 
   const filteredProperties = properties?.filter(
-    (property) => property.type === "house"
+    (property) => property.type === "ground"
   );
 
   return (
@@ -28,7 +28,7 @@ export const HousesCatalogueScreen = () => {
         <Breadcrumb items={breadcrumbItems} />
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 ">
           <h1 className="text-3xl sm:text-4xl lg:text-[48px] font-bold text-[#2f2f2f]">
-            Каталог домов
+            Каталог участков
           </h1>
           <div className="overflow-x-auto">
             <div className="flex flex-nowrap items-center gap-2 sm:gap-4">

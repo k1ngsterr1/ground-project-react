@@ -5,6 +5,7 @@ export interface IGetPropertiesRDO {
   square: number;
   price: number;
   contact: string;
+  number: number;
   agent: boolean;
   owner: boolean;
   type: string;

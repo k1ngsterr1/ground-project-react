@@ -33,46 +33,41 @@ export const PropertyCard: React.FC<CardProps> = ({
 
   const comparisonId = comparisons?.[0]?.id ?? null;
 
-  console.log(comparisonId);
-
   const isSelected = selectedIds.includes(id);
 
   const handleCompareClick = (e: React.MouseEvent) => {
     e.stopPropagation();
 
-    console.log('Comparison click - Current state:', {
-      comparisonId,
-      propertyId: id,
-      isSelected,
-      selectedIds
-    });
-
     if (comparisonId === null) {
-      console.log('Cannot proceed - comparisonId is null');
+      console.log("Cannot proceed - comparisonId is null");
       return;
     }
 
     if (isSelected) {
-      console.log('Removing from comparison:', {
+      console.log("Removing from comparison:", {
         comparisonId,
-        propertyId: id
+        propertyId: id,
       });
       deleteComparison({
         comparisonId,
-        propertyId: id
+        propertyId: id,
       });
       removeId(id);
     } else {
-      console.log('Adding to comparison:', {
+      console.log("Adding to comparison:", {
         comparisonId,
-        propertyId: id
+        propertyId: id,
       });
       addComparison({
         comparisonId,
-        propertyId: id
+        propertyId: id,
       });
       addId(id);
     }
+  };
+
+  const truncateText = (text: string, maxLength: number) => {
+    return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
   };
 
   return (
@@ -85,7 +80,12 @@ export const PropertyCard: React.FC<CardProps> = ({
       </div>
       <div className="p-4 space-y-2">
         <h3 className="text-[22px] font-semibold text-[#2f2f2f]">{name}</h3>
-        <p className="text-[#2f2f2f]/70 text-[16px] ">{description}</p>
+        <p
+          className="text-[#2f2f2f]/70 text-[16px] line-clamp-3"
+          title={description} // Adds a tooltip for the full description
+        >
+          {truncateText(description, 100)}
+        </p>
         <div className="flex items-center justify-between">
           <p className="text-[#00a859] text-[20px] font-semibold">
             {new Intl.NumberFormat("ru-RU").format(price)}₽
@@ -94,8 +94,9 @@ export const PropertyCard: React.FC<CardProps> = ({
             <div className="flex flex-col items-center justify-center">
               <GitCompare
                 onClick={handleCompareClick}
-                className={`transition-colors cursor-pointer ${isSelected ? "text-green" : "text-[#E7E7E7]"
-                  } hover:text-green`}
+                className={`transition-colors cursor-pointer ${
+                  isSelected ? "text-green" : "text-[#E7E7E7]"
+                } hover:text-green`}
               />
               <span className="text-green text-[14px]">Сравнить</span>
             </div>

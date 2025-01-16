@@ -1,36 +1,77 @@
-import image from "@/assets/catalogue_mockup.png";
-import { useShareModalStore } from "@/entites/ui/modal/model/use-share-modal-store";
 import { BrokerTab } from "@/features/ui/broker-tab/ui/broker-tab";
 import { ObjectDescription } from "@/features/ui/object-description/ui/object-description";
 import { Gallery } from "@/features/ui/object-gallery/ui/object-gallery";
 import { ObjectInfo } from "@/features/ui/object-info/ui/object-info";
 import { PriceTab } from "@/features/ui/price-tab/ui/price-tab";
+import { Heart, HeartOff, Trash } from "lucide-react";
+
+import "sweetalert2/dist/sweetalert2.min.css";
+import "react-loading-skeleton/dist/skeleton.css";
+
+const images = Array(7).fill(image);
+
+import image from "@/assets/catalogue_mockup.png";
+import { useShareModalStore } from "@/entites/ui/modal/model/use-share-modal-store";
 import { Breadcrumb } from "@/shared/ui/breadcrumbs/breadcrumbs";
 import { Button } from "@/shared/ui/button/button";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { useParams } from "react-router-dom";
-
+import { useNavigate, useParams } from "react-router-dom";
 import { useAddFavorite } from "@/entites/model/favorites/use-add-favorite";
 import { useGetMe } from "@/entites/model/user/user-auth/use-get-me";
 import { useGetFavorites } from "@/entites/model/favorites/use-get-favorites";
 import { useDeleteFavorite } from "@/entites/model/favorites/use-delete-favorite";
-
-import { Heart, HeartOff } from "lucide-react";
-
-const images = Array(7).fill(image);
+import { useGetProperty } from "@/entites/model/properties/api/use-get-property";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import { useDeleteProperty } from "@/entites/model/properties/api/use-delete-property";
+const SkeletonLoader = () => (
+  <div className="min-h-screen bg-[#fafafa] p-4 sm:p-6 mt-16">
+    <div className="max-w-7xl mx-auto">
+      <Skeleton width={150} height={24} className="mb-4" />
+      <Skeleton width={300} height={40} className="mb-8" />
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr,520px] gap-8">
+        <div className="space-y-6">
+          <Skeleton height={300} />
+          <Skeleton height={50} />
+        </div>
+        <div className="space-y-6">
+          <Skeleton count={4} height={20} />
+          <Skeleton height={200} />
+          <Skeleton height={50} width={200} />
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <Skeleton height={45} width={240} />
+            <Skeleton height={45} width={240} />
+          </div>
+          <Skeleton height={150} />
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 export const ObjectInnerScreen = () => {
   const { openModal } = useShareModalStore();
+  const { id } = useParams();
+  const { data, isLoading } = useGetProperty(Number(id));
+  const { data: myData } = useGetMe();
   const { mutate: addFavorite } = useAddFavorite();
+  const { mutate: deleteProperty } = useDeleteProperty();
   const { id: propertyId } = useParams();
   const { data: userData } = useGetMe();
-  const { data: favoritesData } = useGetFavorites(userData?.id?.toString() || "");
+  const navigate = useNavigate();
+  const { data: favoritesData } = useGetFavorites(
+    userData?.id?.toString() || ""
+  );
   const { mutate: deleteFavorite } = useDeleteFavorite();
 
   const isInFavorites = favoritesData?.some(
     (favorite) => favorite.propertyId.toString() === propertyId
   );
+
+  if (isLoading) {
+    return <SkeletonLoader />;
+  }
 
   const handleAddToFavorites = () => {
     const userId = userData?.id.toString();
@@ -85,11 +126,34 @@ export const ObjectInnerScreen = () => {
     });
   };
 
+  const handleDelete = (propertyID: number) => {
+    deleteProperty(propertyID, {
+      onSuccess: () => {
+        if (data?.type == "land") {
+          navigate("/houses-catalogue");
+        } else {
+          navigate("/ground-catalogue");
+        }
+      },
+      onError: (error) => {
+        console.error("Error deleting property:", error);
+      },
+    });
+  };
+
   const breadcrumbItems = [
     { label: "Главная", href: "/" },
     { label: "Каталог домов", href: "/houses-catalogue" },
-    { label: "Тестовый объект", href: "/houses-catalogue/1", isActive: true },
+    {
+      label: `${data?.name}`,
+      href: `/houses-catalogue/${data?.id}`,
+      isActive: true,
+    },
   ];
+
+  if (!data) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-[#fafafa] p-4 sm:p-6 mt-16">
@@ -97,20 +161,31 @@ export const ObjectInnerScreen = () => {
         {/* Breadcrumb */}
         <Breadcrumb items={breadcrumbItems} />
         {/* Title */}
-        <h1 className="text-[32px] sm:text-[32px] md:text-[40px] lg:text-[48px] font-bold text-[#2f2f2f] text-left lg:text-left">
-          Скандинавский уют
-        </h1>
+        <div className="w-full flex items-center justify-between">
+          <h1 className="text-[32px] sm:text-[32px] md:text-[40px] lg:text-[48px] font-bold text-[#2f2f2f] text-left lg:text-left">
+            {data?.name}
+          </h1>
+          {myData?.role === "admin" && (
+            <Trash
+              onClick={() => handleDelete(Number(id))}
+              className="text-red-500 cursor-pointer transition-colors hover:text-red-700"
+            />
+          )}
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-[1fr,520px] gap-8 mt-8">
           <div className="space-y-6">
-            <Gallery images={images} />
+            <Gallery images={data?.image || images} />
           </div>
           <div className="space-y-6">
             {/* Description */}
-            <ObjectDescription />
+            <ObjectDescription text={data?.description} />
             {/* Property Info */}
-            <ObjectInfo />
-            {/* Price and ID */}
-            <PriceTab />
+            <ObjectInfo
+              type={data?.type}
+              location={data?.location}
+              square={data?.square}
+            />
+            <PriceTab price={data?.price} number={data?.number} />
             <div className="flex flex-col sm:flex-row items-center gap-4">
               <Button
                 className="w-full sm:w-[240px] h-[45px] text-sm"

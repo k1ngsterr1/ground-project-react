@@ -1,9 +1,22 @@
 import { HouseIcon, MapPinHouse } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { CatalogueCard } from "../../../../entites/ui/catalogue-card/ui/catalogue-card";
+import { useGetProperties } from "@/entites/model/properties/api/use-get-properties";
+import { useGetMe } from "@/entites/model/user/user-auth/use-get-me";
+import { Button } from "@/shared/ui/button/button";
 
 export const MainScreen = () => {
   const navigate = useNavigate();
+  const { data: properties } = useGetProperties();
+  const { data: myData } = useGetMe();
+
+  const groundProperties = properties?.filter(
+    (property) => property.type === "ground"
+  );
+
+  const houseProperties = properties?.filter(
+    (property) => property.type === "house"
+  );
 
   return (
     <main className="w-full h-[100vh] flex flex-col items-center justify-center px-4">
@@ -28,7 +41,7 @@ export const MainScreen = () => {
               strokeWidth={1}
             />
           }
-          quantity="1"
+          quantity={Number(houseProperties?.length)}
         />
         <CatalogueCard
           onClick={() => navigate("/ground-catalogue")}
@@ -41,9 +54,18 @@ export const MainScreen = () => {
               strokeWidth={1}
             />
           }
-          quantity="1"
+          quantity={Number(groundProperties?.length)}
         />
       </div>
+      {(myData?.role == "admin" || "manager") && (
+        <Button
+          type="submit"
+          onClick={() => navigate("/add-object")}
+          className="bg-[#00a859] text-white hover:bg-[#00a859]/90 mt-8"
+        >
+          Добавить объект
+        </Button>
+      )}
     </main>
   );
 };

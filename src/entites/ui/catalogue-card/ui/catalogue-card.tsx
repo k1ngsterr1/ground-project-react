@@ -3,7 +3,7 @@ import React from "react";
 interface ICatalogueCard {
   name: string;
   icon: React.ReactNode;
-  quantity: string;
+  quantity: number;
   onClick: () => void;
 }
 
