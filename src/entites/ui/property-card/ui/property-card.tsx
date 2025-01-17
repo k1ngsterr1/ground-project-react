@@ -75,8 +75,8 @@ export const PropertyCard: React.FC<CardProps> = ({
       onClick={() => navigate(`/houses-catalogue/${id}`)}
       className="bg-[#ffffff] min-h-[390px] cursor-pointer rounded-lg shadow-lg transition-all hover:shadow-xl overflow-hidden"
     >
-      <div className="relative w-full">
-        <img src={image} alt={name} className="object-cover w-full" />
+      <div className="relative w-full h-[250px]">
+        <img src={image} alt={name} className=" w-full h-full" />
       </div>
       <div className="p-4 space-y-2">
         <h3 className="text-[22px] font-semibold text-[#2f2f2f]">{name}</h3>

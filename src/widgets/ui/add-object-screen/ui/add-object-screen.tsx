@@ -144,13 +144,6 @@ export const AddObjectScreen = () => {
               Добавление объекта
             </h1>
           </div>
-          <Button
-            variant="outline"
-            onClick={() => navigate("/houses-catalogue")}
-            className="text-[#00a859] border-[#00a859] hover:bg-[#00a859]/5"
-          >
-            Все объекты
-          </Button>
         </div>
 
         <form

@@ -13,6 +13,7 @@ import { RegistrationPage } from "./pages/registration-page/registration-page.ts
 import ClientLayout from "./shared/layouts/client-layout.tsx";
 import { GroundCatalogueScreen } from "./widgets/ui/ground-catalogue-screen/ui/ground-catalogue-screen.tsx";
 import { AuthLayout } from "./shared/layouts/auth-layout.tsx";
+import { UserManagementPage } from "./pages/user-management-page/user-management-page.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -21,6 +22,14 @@ createRoot(document.getElementById("root")!).render(
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/houses-catalogue" element={<HousesCataloguePage />} />
+          <Route
+            path="/user-management"
+            element={
+              <AuthLayout allowedRoles={["admin"]}>
+                <UserManagementPage />
+              </AuthLayout>
+            }
+          />
           <Route path="/ground-catalogue" element={<GroundCatalogueScreen />} />
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/comparison" element={<ComparisonPage />} />
@@ -28,7 +37,7 @@ createRoot(document.getElementById("root")!).render(
           <Route
             path="/add-object"
             element={
-              <AuthLayout allowedRoles={["admin"]}>
+              <AuthLayout allowedRoles={["admin", "manager"]}>
                 <AddObjectPage />
               </AuthLayout>
             }

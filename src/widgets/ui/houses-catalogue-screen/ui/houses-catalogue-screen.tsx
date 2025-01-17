@@ -1,5 +1,5 @@
+import { useState } from "react";
 import { useComparisonStore } from "@/entites/model/comparison-store/use-comparison-store";
-import { FilterButton } from "@/entites/ui/filter-button/ui/filter-button";
 import { PropertyCard } from "@/entites/ui/property-card/ui/property-card";
 import { SkeletonPropertyCard } from "@/entites/ui/skeleton-property-card/ui/skeleton-property-card";
 import { Breadcrumb } from "@/shared/ui/breadcrumbs/breadcrumbs";
@@ -8,19 +8,103 @@ import { Banknote, MapPin, Square } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import { useGetProperties } from "@/entites/model/properties/api/use-get-properties";
+import { FilterDropdown } from "@/entites/ui/filter-dropdown/ui/filter-dropdown";
+import { useGetLocations } from "@/entites/model/properties/api/use-get-locations";
 
 export const HousesCatalogueScreen = () => {
   const navigate = useNavigate();
   const { selectedIds } = useComparisonStore();
-  const { data: properties, isLoading } = useGetProperties();
+
+  // Filters state
+  const [filters, setFilters] = useState<{
+    priceMin?: number;
+    priceMax?: number;
+    squareMin?: number;
+    squareMax?: number;
+    location?: string;
+  }>({});
+
+  // Fetch properties and locations
+  const { data: properties, isLoading } = useGetProperties(filters);
+  const { data: locations } = useGetLocations();
+
+  // Breadcrumb items
   const breadcrumbItems = [
     { label: "Главная", href: "/" },
     { label: "Каталог домов", href: "/houses-catalogue", isActive: true },
   ];
 
+  // Filtered properties by type (house)
   const filteredProperties = properties?.filter(
     (property) => property.type === "house"
   );
+
+  const initialFilters = {
+    priceMin: undefined,
+    priceMax: undefined,
+    squareMin: undefined,
+    squareMax: undefined,
+    location: undefined,
+  };
+
+  // Update filters
+  const handlePriceSelect = (option: string) => {
+    switch (option) {
+      case "До 1 млн":
+        setFilters((prev) => ({ ...prev, priceMin: 0, priceMax: 1000000 }));
+        break;
+      case "1-5 млн":
+        setFilters((prev) => ({
+          ...prev,
+          priceMin: 1000000,
+          priceMax: 5000000,
+        }));
+        break;
+      case "5-10 млн":
+        setFilters((prev) => ({
+          ...prev,
+          priceMin: 5000000,
+          priceMax: 10000000,
+        }));
+        break;
+      case "Более 10 млн":
+        setFilters((prev) => ({
+          ...prev,
+          priceMin: 10000000,
+          priceMax: undefined,
+        }));
+        break;
+    }
+  };
+
+  const handleLocationSelect = (option: string) => {
+    setFilters((prev) => ({ ...prev, location: option }));
+  };
+
+  const handleAreaSelect = (option: string) => {
+    switch (option) {
+      case "До 50 м²":
+        setFilters((prev) => ({ ...prev, squareMin: 0, squareMax: 50 }));
+        break;
+      case "50-100 м²":
+        setFilters((prev) => ({ ...prev, squareMin: 50, squareMax: 100 }));
+        break;
+      case "100-200 м²":
+        setFilters((prev) => ({ ...prev, squareMin: 100, squareMax: 200 }));
+        break;
+      case "Более 200 м²":
+        setFilters((prev) => ({
+          ...prev,
+          squareMin: 200,
+          squareMax: undefined,
+        }));
+        break;
+    }
+  };
+
+  const handleResetFilters = () => {
+    setFilters(initialFilters);
+  };
 
   return (
     <div className="min-h-screen bg-[#fafafa] px-4 sm:px-6 py-4 sm:py-6 mt-[60px] sm:mt-16">
@@ -32,18 +116,34 @@ export const HousesCatalogueScreen = () => {
           </h1>
           <div className="overflow-x-auto">
             <div className="flex flex-nowrap items-center gap-2 sm:gap-4">
-              <FilterButton
+              <FilterDropdown
                 icon={<Banknote className="w-4 h-4" />}
                 label="Цена"
+                options={["До 1 млн", "1-5 млн", "5-10 млн", "Более 10 млн"]}
+                onSelect={handlePriceSelect}
               />
-              <FilterButton
-                icon={<MapPin className="w-4 h-4" />}
-                label="Локация"
-              />
-              <FilterButton
+              {locations && (
+                <FilterDropdown
+                  icon={<MapPin className="w-4 h-4" />}
+                  label="Локация"
+                  options={locations}
+                  onSelect={handleLocationSelect}
+                />
+              )}
+              <FilterDropdown
                 icon={<Square className="w-4 h-4" />}
                 label="Площадь"
+                options={[
+                  "До 50 м²",
+                  "50-100 м²",
+                  "100-200 м²",
+                  "Более 200 м²",
+                ]}
+                onSelect={handleAreaSelect}
               />
+              <Button variant="outline" onClick={handleResetFilters}>
+                Сбросить фильтры
+              </Button>
             </div>
           </div>
         </div>

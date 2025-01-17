@@ -3,9 +3,17 @@
 import { apiClient } from "@/shared/config/apiClient";
 import { IGetPropertiesRDO } from "../rdo/get-properties.rdo";
 
-export const getProperties = async (): Promise<IGetPropertiesRDO[]> => {
+export const getProperties = async (filters?: {
+  priceMin?: number;
+  priceMax?: number;
+  squareMin?: number;
+  squareMax?: number;
+  location?: string;
+}): Promise<IGetPropertiesRDO[]> => {
   try {
-    const { data } = await apiClient.get<IGetPropertiesRDO[]>("properties");
+    const { data } = await apiClient.get<IGetPropertiesRDO[]>("properties", {
+      params: filters,
+    });
 
     return data;
   } catch (error) {

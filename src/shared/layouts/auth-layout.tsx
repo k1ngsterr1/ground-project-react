@@ -1,5 +1,3 @@
-"use client";
-
 import { useAuthStore } from "@/entites/model/user/user-auth/use-auth-store";
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -22,16 +20,27 @@ export const AuthLayout: React.FC<{
   }, [loadToken]);
 
   useEffect(() => {
-    if (!isLoading && (!isAuthorized || !allowedRoles.includes(type))) {
-      const loginPath = allowedRoles.includes("admin") ? "/" : "/login";
-      navigate(loginPath, { state: { from: location }, replace: true });
+    if (!isLoading) {
+      console.log("Auth Check Debug:", {
+        isAuthorized,
+        type,
+        allowedRoles,
+      });
+
+      if (!isAuthorized) {
+        console.log("User is not authorized, redirecting to login.");
+        navigate("/login", { state: { from: location }, replace: true });
+      } else if (!allowedRoles.includes(type)) {
+        console.log(`Access denied for role: ${type}`);
+        navigate("/login", { state: { from: location }, replace: true });
+      }
     }
   }, [allowedRoles, type, isAuthorized, isLoading, navigate, location]);
 
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <Spinner size={80} color="#00A859" /> {/* Blue spinner */}
+        <Spinner size={80} color="#00A859" />
       </div>
     );
   }

@@ -1,12 +1,19 @@
 import { ChevronDown } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface FilterButtonProps {
   icon: React.ReactNode;
   label: string;
   onClick?: () => void;
+  isOpen: boolean;
 }
 
-export function FilterButton({ icon, label, onClick }: FilterButtonProps) {
+export function FilterButton({
+  icon,
+  label,
+  onClick,
+  isOpen,
+}: FilterButtonProps) {
   return (
     <button
       onClick={onClick}
@@ -14,7 +21,12 @@ export function FilterButton({ icon, label, onClick }: FilterButtonProps) {
     >
       {icon}
       <span>{label}</span>
-      <ChevronDown className="w-4 h-4" />
+      <motion.div
+        animate={{ rotate: isOpen ? 180 : 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <ChevronDown className="w-4 h-4" />
+      </motion.div>
     </button>
   );
 }

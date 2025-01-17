@@ -4,6 +4,7 @@ import { CatalogueCard } from "../../../../entites/ui/catalogue-card/ui/catalogu
 import { useGetProperties } from "@/entites/model/properties/api/use-get-properties";
 import { useGetMe } from "@/entites/model/user/user-auth/use-get-me";
 import { Button } from "@/shared/ui/button/button";
+import { useEffect } from "react";
 
 export const MainScreen = () => {
   const navigate = useNavigate();
@@ -17,6 +18,10 @@ export const MainScreen = () => {
   const houseProperties = properties?.filter(
     (property) => property.type === "house"
   );
+
+  useEffect(() => {
+    console.log(myData);
+  }, []);
 
   return (
     <main className="w-full h-[100vh] flex flex-col items-center justify-center px-4">
@@ -57,15 +62,30 @@ export const MainScreen = () => {
           quantity={Number(groundProperties?.length)}
         />
       </div>
-      {(myData?.role == "admin" || "manager") && (
+      <div className="flex flex-col items-center justify-center nt-8 gap-4">
         <Button
-          type="submit"
-          onClick={() => navigate("/add-object")}
+          onClick={() => navigate("/favorites")}
           className="bg-[#00a859] text-white hover:bg-[#00a859]/90 mt-8"
         >
-          Добавить объект
+          Избранное
         </Button>
-      )}
+        {(myData?.role == "admin" || "manager") && (
+          <Button
+            onClick={() => navigate("/add-object")}
+            className="bg-[#00a859] text-white hover:bg-[#00a859]/90 "
+          >
+            Добавить объект
+          </Button>
+        )}
+        {myData?.role == "admin" && (
+          <Button
+            onClick={() => navigate("/user-management")}
+            className="bg-[#00a859] text-white hover:bg-[#00a859]/90 "
+          >
+            Управлять ролями
+          </Button>
+        )}
+      </div>
     </main>
   );
 };
