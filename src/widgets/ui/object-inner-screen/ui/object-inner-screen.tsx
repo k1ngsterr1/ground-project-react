@@ -4,12 +4,8 @@ import { Gallery } from "@/features/ui/object-gallery/ui/object-gallery";
 import { ObjectInfo } from "@/features/ui/object-info/ui/object-info";
 import { PriceTab } from "@/features/ui/price-tab/ui/price-tab";
 import { Heart, HeartOff, Trash } from "lucide-react";
-
 import "sweetalert2/dist/sweetalert2.min.css";
 import "react-loading-skeleton/dist/skeleton.css";
-
-const images = Array(7).fill(image);
-
 import image from "@/assets/catalogue_mockup.png";
 import { useShareModalStore } from "@/entites/ui/modal/model/use-share-modal-store";
 import { Breadcrumb } from "@/shared/ui/breadcrumbs/breadcrumbs";
@@ -25,6 +21,9 @@ import { useGetProperty } from "@/entites/model/properties/api/use-get-property"
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useDeleteProperty } from "@/entites/model/properties/api/use-delete-property";
+
+const images = Array(7).fill(image);
+
 const SkeletonLoader = () => (
   <div className="min-h-screen bg-[#fafafa] p-4 sm:p-6 mt-16">
     <div className="max-w-7xl mx-auto">
@@ -158,9 +157,7 @@ export const ObjectInnerScreen = () => {
   return (
     <div className="min-h-screen bg-[#fafafa] p-4 sm:p-6 mt-16">
       <div className="max-w-7xl mx-auto">
-        {/* Breadcrumb */}
         <Breadcrumb items={breadcrumbItems} />
-        {/* Title */}
         <div className="w-full flex items-center justify-between">
           <h1 className="text-[32px] sm:text-[32px] md:text-[40px] lg:text-[48px] font-bold text-[#2f2f2f] text-left lg:text-left">
             {data?.name}
@@ -173,18 +170,38 @@ export const ObjectInnerScreen = () => {
           )}
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-[1fr,520px] gap-8 mt-8">
-          <div className="space-y-6">
+          <div className="space-y-6 flex flex-col">
             <Gallery images={data?.image || images} />
+            {myData?.role === "admin" ? (
+              <>
+                <span className="mt-12 text-2xl">
+                  Контакт продавца:
+                  <a href={`tel:${data.contact}`} className="text-green">
+                    {data.contact}
+                  </a>
+                </span>
+                <span className="mt-12 text-2xl">
+                  {data.agent && (
+                    <span className="text-green">Собственник</span>
+                  )}
+                </span>
+                <span className="mt-12 text-2xl">
+                  {data.owner && <span className="text-green">Владелец</span>}
+                </span>
+              </>
+            ) : (
+              <></>
+            )}
           </div>
           <div className="space-y-6">
-            {/* Description */}
             <ObjectDescription text={data?.description} />
-            {/* Property Info */}
-            <ObjectInfo
-              type={data?.type}
-              location={data?.location}
-              square={data?.square}
-            />
+            {myData?.role === "admin" && (
+              <ObjectInfo
+                type={data?.type}
+                location={data?.location}
+                square={data?.square}
+              />
+            )}
             <PriceTab price={data?.price} number={data?.number} />
             <div className="flex flex-col sm:flex-row items-center gap-4">
               <Button
