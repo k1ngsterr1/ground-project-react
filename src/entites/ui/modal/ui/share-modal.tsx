@@ -5,17 +5,23 @@ import whatsapp from "@/assets/whatsapp.svg";
 
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useShareModalStore } from "../model/use-share-modal-store";
 import { Modal } from "./modal";
 
 export function ShareModal() {
   const { closeModal } = useShareModalStore();
   const [copied, setCopied] = useState(false);
+  const [currentUrl, setCurrentUrl] = useState("");
+
+  // Set the current URL from the browser
+  useEffect(() => {
+    setCurrentUrl(window.location.href);
+  }, []);
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText("https://example.com");
+      await navigator.clipboard.writeText(currentUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -49,7 +55,7 @@ export function ShareModal() {
           <div className="flex gap-2">
             <input
               type="text"
-              value="https://example.com"
+              value={currentUrl} // Dynamically set the URL
               readOnly
               className="flex-1 px-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#00a859] focus:border-transparent"
             />
