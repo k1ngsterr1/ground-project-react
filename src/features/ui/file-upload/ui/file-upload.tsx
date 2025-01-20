@@ -13,20 +13,33 @@ export function FileUpload({ onChange }: FileUploadProps) {
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      setFiles(acceptedFiles);
-      onChange?.(acceptedFiles);
+      setFiles((prev) => {
+        // Merge new files with existing ones and remove duplicates
+        const mergedFiles = [
+          ...prev,
+          ...acceptedFiles.filter(
+            (file) =>
+              !prev.some((existingFile) => existingFile.name === file.name)
+          ),
+        ];
+        onChange?.(mergedFiles);
+        return mergedFiles;
+      });
     },
     [onChange]
   );
 
-  const removeFile = useCallback((index: number) => {
-    setFiles(prev => {
-      const newFiles = [...prev];
-      newFiles.splice(index, 1);
-      onChange?.(newFiles);
-      return newFiles;
-    });
-  }, [onChange]);
+  const removeFile = useCallback(
+    (index: number) => {
+      setFiles((prev) => {
+        const newFiles = [...prev];
+        newFiles.splice(index, 1);
+        onChange?.(newFiles);
+        return newFiles;
+      });
+    },
+    [onChange]
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -51,7 +64,7 @@ export function FileUpload({ onChange }: FileUploadProps) {
           </p>
         </div>
       </div>
-      
+
       {files.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {files.map((file, index) => (
