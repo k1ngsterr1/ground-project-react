@@ -26,7 +26,7 @@ export const MainScreen = () => {
   return (
     <main className="w-full h-[100vh] flex flex-col items-center justify-center px-4">
       {/* Заголовок */}
-      <div className="flex gap-4  justify-center items-center">
+      <div className="flex gap-4  justify-center items-center mb-4">
         <Button
           onClick={() => navigate("/login")}
           className="bg-[#00a859] text-white hover:bg-[#00a859]/90 "
