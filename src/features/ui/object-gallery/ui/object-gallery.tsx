@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -10,6 +10,7 @@ interface GalleryProps {
 
 export function Gallery({ images }: GalleryProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const thumbnailRef = useRef<HTMLDivElement>(null);
 
   const slideVariants = {
     enter: (direction: number) => ({
@@ -40,8 +41,16 @@ export function Gallery({ images }: GalleryProps) {
     }
   };
 
+  const scrollThumbnails = (direction: "left" | "right") => {
+    if (thumbnailRef.current) {
+      const scrollAmount = direction === "left" ? -200 : 200;
+      thumbnailRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
+  };
+
   return (
     <div className="space-y-4">
+      {/* Main Image */}
       <div className="relative w-full aspect-[16/9] overflow-hidden rounded-lg">
         <AnimatePresence initial={false} custom={currentIndex}>
           <motion.div
@@ -59,13 +68,11 @@ export function Gallery({ images }: GalleryProps) {
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={1}
             onDragEnd={(e, { offset, velocity }) => {
-              if (e) {
-                const swipe = swipePower(offset.x, velocity.x);
-                if (swipe < -swipeConfidenceThreshold) {
-                  paginate(1);
-                } else if (swipe > swipeConfidenceThreshold) {
-                  paginate(-1);
-                }
+              const swipe = swipePower(offset.x, velocity.x);
+              if (swipe < -swipeConfidenceThreshold) {
+                paginate(1);
+              } else if (swipe > swipeConfidenceThreshold) {
+                paginate(-1);
               }
             }}
             className="absolute inset-0 w-full h-full"
@@ -78,6 +85,7 @@ export function Gallery({ images }: GalleryProps) {
           </motion.div>
         </AnimatePresence>
 
+        {/* Navigation Buttons */}
         <button
           onClick={() => paginate(-1)}
           className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white transition-colors disabled:opacity-50"
@@ -95,22 +103,47 @@ export function Gallery({ images }: GalleryProps) {
         </button>
       </div>
 
-      <div className="flex gap-4 overflow-x-auto pb-2">
-        {images.map((image, index) => (
+      {/* Thumbnails Section */}
+      <div className="relative flex items-center">
+        {/* Scroll Buttons */}
+        {images.length > 8 && (
           <button
-            key={index}
-            onClick={() => setCurrentIndex(index)}
-            className={`relative flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden ${
-              currentIndex === index ? "ring-2 ring-[#00a859]" : ""
-            }`}
+            onClick={() => scrollThumbnails("left")}
+            className="absolute left-0 z-10 p-2 bg-white/80 hover:bg-white transition-colors rounded-full"
           >
-            <img
-              src={image}
-              alt={`Thumbnail ${index + 1}`}
-              className="w-full h-full object-cover"
-            />
+            <ChevronLeft className="w-6 h-6" />
           </button>
-        ))}
+        )}
+
+        <div
+          className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide max-w-[640px] pl-8 pr-8"
+          ref={thumbnailRef}
+        >
+          {images.slice(0, 8).map((image, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentIndex(index)}
+              className={`relative flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden ${
+                currentIndex === index ? "ring-2 ring-[#00a859]" : ""
+              }`}
+            >
+              <img
+                src={image}
+                alt={`Thumbnail ${index + 1}`}
+                className="w-full h-full object-cover"
+              />
+            </button>
+          ))}
+        </div>
+
+        {images.length > 8 && (
+          <button
+            onClick={() => scrollThumbnails("right")}
+            className="absolute right-0 z-10 p-2 bg-white/80 hover:bg-white transition-colors rounded-full"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+        )}
       </div>
     </div>
   );

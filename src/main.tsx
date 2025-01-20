@@ -33,7 +33,14 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/ground-catalogue" element={<GroundCatalogueScreen />} />
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/comparison" element={<ComparisonPage />} />
-          <Route path="/houses-catalogue/:id" element={<ObjectInnerPage />} />
+          <Route
+            path="/houses-catalogue/:id"
+            element={<ObjectInnerPage isGround={false} />}
+          />{" "}
+          <Route
+            path="/ground-catalogue/:id"
+            element={<ObjectInnerPage isGround={true} />}
+          />
           <Route
             path="/add-object"
             element={

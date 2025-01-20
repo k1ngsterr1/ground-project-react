@@ -14,6 +14,7 @@ interface CardProps {
   name: string;
   description: string;
   price: number;
+  isGround: boolean;
 }
 
 export const PropertyCard: React.FC<CardProps> = ({
@@ -22,6 +23,7 @@ export const PropertyCard: React.FC<CardProps> = ({
   description,
   price,
   id,
+  isGround,
 }) => {
   const navigate = useNavigate();
 
@@ -72,7 +74,12 @@ export const PropertyCard: React.FC<CardProps> = ({
 
   return (
     <div
-      onClick={() => navigate(`/houses-catalogue/${id}`)}
+      onClick={
+        () =>
+          navigate(
+            isGround ? `/ground-catalogue/${id}` : `/houses-catalogue/${id}`
+          ) // Navigate based on isGround
+      }
       className="bg-[#ffffff] min-h-[390px] cursor-pointer rounded-lg shadow-lg transition-all hover:shadow-xl overflow-hidden"
     >
       <div className="relative w-full h-[250px]">

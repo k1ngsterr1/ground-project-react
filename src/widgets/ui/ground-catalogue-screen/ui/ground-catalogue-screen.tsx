@@ -155,6 +155,7 @@ export const GroundCatalogueScreen = () => {
             : filteredProperties?.map((ground) => (
                 <PropertyCard
                   key={ground.id}
+                  isGround
                   id={ground.id}
                   image={ground.image[0]}
                   name={ground.name}

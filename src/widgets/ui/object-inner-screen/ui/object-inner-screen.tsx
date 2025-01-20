@@ -49,7 +49,13 @@ const SkeletonLoader = () => (
   </div>
 );
 
-export const ObjectInnerScreen = () => {
+type ObjectInnerScreenProps = {
+  isGround: boolean;
+};
+
+export const ObjectInnerScreen: React.FC<ObjectInnerScreenProps> = ({
+  isGround,
+}) => {
   const { openModal } = useShareModalStore();
   const { id } = useParams();
   const { data, isLoading } = useGetProperty(Number(id));
@@ -142,10 +148,15 @@ export const ObjectInnerScreen = () => {
 
   const breadcrumbItems = [
     { label: "Главная", href: "/" },
-    { label: "Каталог домов", href: "/houses-catalogue" },
+    {
+      label: isGround ? "Каталог участков" : "Каталог домов",
+      href: isGround ? "/ground-catalogue" : "/houses-catalogue",
+    },
     {
       label: `${data?.name}`,
-      href: `/houses-catalogue/${data?.id}`,
+      href: isGround
+        ? `/ground-catalogue/${data?.id}`
+        : `/houses-catalogue/${data?.id}`,
       isActive: true,
     },
   ];

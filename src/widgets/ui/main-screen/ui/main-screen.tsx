@@ -91,7 +91,7 @@ export const MainScreen = () => {
             Добавить объект
           </Button>
         )}
-        {myData?.role == "admin" && (
+        {myData?.role === "admin" && (
           <Button
             onClick={() => navigate("/user-management")}
             className="bg-[#00a859] text-white hover:bg-[#00a859]/90 "

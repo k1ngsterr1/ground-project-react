@@ -1,10 +1,16 @@
 import { ShareModal } from "@/entites/ui/modal/ui/share-modal";
 import { ObjectInnerScreen } from "@/widgets/ui/object-inner-screen/ui/object-inner-screen";
 
-export const ObjectInnerPage = () => {
+type ObjectInnerPageProps = {
+  isGround: boolean;
+};
+
+export const ObjectInnerPage: React.FC<ObjectInnerPageProps> = ({
+  isGround,
+}) => {
   return (
     <>
-      <ObjectInnerScreen />
+      <ObjectInnerScreen isGround={isGround} />
       <ShareModal />
     </>
   );
