@@ -172,14 +172,8 @@ export const ObjectInnerScreen = () => {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr,520px] gap-8 mt-8">
           <div className="space-y-6 flex flex-col">
             <Gallery images={data?.image || images} />
-            {myData?.role === "admin" ? (
+            {["admin", "manager"].includes(myData?.role as string) ? (
               <>
-                <span className="mt-12 text-2xl">
-                  Контакт продавца:
-                  <a href={`tel:${data.contact}`} className="text-green">
-                    {data.contact}
-                  </a>
-                </span>
                 <span className="mt-12 text-2xl">
                   {data.agent && (
                     <span className="text-green">Собственник</span>
@@ -187,6 +181,16 @@ export const ObjectInnerScreen = () => {
                 </span>
                 <span className="mt-12 text-2xl">
                   {data.owner && <span className="text-green">Владелец</span>}
+                </span>
+              </>
+            ) : null}
+            {myData?.role === "admin" ? (
+              <>
+                <span className="mt-12 text-2xl">
+                  Контакт продавца:
+                  <a href={`tel:${data.contact}`} className="text-green">
+                    {data.contact}
+                  </a>
                 </span>
               </>
             ) : (
