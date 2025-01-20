@@ -21,6 +21,8 @@ import { useGetProperty } from "@/entites/model/properties/api/use-get-property"
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useDeleteProperty } from "@/entites/model/properties/api/use-delete-property";
+import { useState } from "react";
+import { EditPropertyModal } from "@/entites/ui/edit-modal-card/ui/edit-modal-card";
 
 const images = Array(7).fill(image);
 
@@ -69,6 +71,7 @@ export const ObjectInnerScreen: React.FC<ObjectInnerScreenProps> = ({
     userData?.id?.toString() || ""
   );
   const { mutate: deleteFavorite } = useDeleteFavorite();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const isInFavorites = favoritesData?.some(
     (favorite) => favorite.propertyId.toString() === propertyId
@@ -134,10 +137,10 @@ export const ObjectInnerScreen: React.FC<ObjectInnerScreenProps> = ({
   const handleDelete = (propertyID: number) => {
     deleteProperty(propertyID, {
       onSuccess: () => {
-        if (data?.type == "land") {
-          navigate("/houses-catalogue");
-        } else {
+        if (isGround) {
           navigate("/ground-catalogue");
+        } else {
+          navigate("/houses-catalogue");
         }
       },
       onError: (error) => {
@@ -173,12 +176,22 @@ export const ObjectInnerScreen: React.FC<ObjectInnerScreenProps> = ({
           <h1 className="text-[32px] sm:text-[32px] md:text-[40px] lg:text-[48px] font-bold text-[#2f2f2f] text-left lg:text-left">
             {data?.name}
           </h1>
-          {myData?.role === "admin" && (
-            <Trash
-              onClick={() => handleDelete(Number(id))}
-              className="text-red-500 cursor-pointer transition-colors hover:text-red-700"
-            />
-          )}
+          <div className="flex items-center gap-4">
+            {["manager", "admin"].includes(myData?.role as string) && (
+              <Button
+                onClick={() => setIsEditModalOpen(true)}
+                className="bg-blue-500 text-white"
+              >
+                Редактировать объект
+              </Button>
+            )}
+            {myData?.role === "admin" && (
+              <Trash
+                onClick={() => handleDelete(Number(id))}
+                className="text-red-500 cursor-pointer transition-colors hover:text-red-700"
+              />
+            )}
+          </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-[1fr,520px] gap-8 mt-8">
           <div className="space-y-6 flex flex-col">
@@ -250,6 +263,11 @@ export const ObjectInnerScreen: React.FC<ObjectInnerScreenProps> = ({
           </div>
         </div>
       </div>
+      <EditPropertyModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        propertyId={Number(id)}
+      />
     </div>
   );
 };
