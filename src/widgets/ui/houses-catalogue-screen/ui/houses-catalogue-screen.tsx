@@ -27,8 +27,6 @@ export const HousesCatalogueScreen = () => {
   }>({});
 
   const [searchNumber, setSearchNumber] = useState(""); // Добавляем состояние для номера
-
-  // Fetch properties and locations
   const { data: properties, isLoading } = useGetProperties(filters);
   const { data: locations } = useGetLocations();
 

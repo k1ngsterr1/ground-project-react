@@ -8,10 +8,11 @@ export const useGetProperties = (filters?: {
   squareMin?: number;
   squareMax?: number;
   location?: string;
+  number?: number; // Добавляем number в параметры
 }) => {
   return useQuery<IGetPropertiesRDO[], Error>({
-    queryKey: ["propertiesData", filters], // Include filters in the queryKey
-    queryFn: () => getProperties(filters), // Pass filters to the query function
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    queryKey: ["propertiesData", filters], // Фильтры в queryKey для кеширования
+    queryFn: () => getProperties(filters), // Передаем фильтры в запрос
+    staleTime: 5 * 60 * 1000, // 5 минут
   });
 };

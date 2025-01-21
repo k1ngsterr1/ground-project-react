@@ -49,7 +49,7 @@ export function Modal({ children }: ModalProps) {
                 duration: 0.2,
               },
             }}
-            className="fixed left-[40%] top-1/3 -translate-x-1/3 -translate-y-[40%] z-50"
+            className="fixed left-[5%] md:left-[35%] top-1/4 md:-translate-x-1/3 -translate-y-[40%] z-50"
           >
             <div className="bg-white rounded-lg shadow-lg w-[520px] max-w-[90vw]">
               {children}
