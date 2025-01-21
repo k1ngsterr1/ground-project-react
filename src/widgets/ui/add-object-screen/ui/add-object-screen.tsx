@@ -23,6 +23,7 @@ export const AddObjectScreen = () => {
     square: "",
     price: "",
     type: "",
+    link: "",
     description: "",
     location: "",
     number: "",
@@ -153,6 +154,12 @@ export const AddObjectScreen = () => {
           <FileUpload onChange={handleFileChange} />
 
           <div className="space-y-6">
+            <Input
+              label="Ссылка на объявление"
+              placeholder="Ссылка на объявление"
+              value={formData.link}
+              onChange={handleInputChange("link")}
+            />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Input
                 label="Название объекта"

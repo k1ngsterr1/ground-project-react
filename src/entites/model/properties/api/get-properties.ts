@@ -9,10 +9,11 @@ export const getProperties = async (filters?: {
   squareMin?: number;
   squareMax?: number;
   location?: string;
+  number?: number; // Добавляем number
 }): Promise<IGetPropertiesRDO[]> => {
   try {
     const { data } = await apiClient.get<IGetPropertiesRDO[]>("properties", {
-      params: filters,
+      params: filters, // Передаем все фильтры, включая number
     });
 
     return data;

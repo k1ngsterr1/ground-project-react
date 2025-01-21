@@ -28,59 +28,55 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
     square: "",
     type: "",
     location: "",
-    image: [],
+    image: [], // Существующие пути к фотографиям
   });
 
-  // Логируем загрузку данных с сервера
   useEffect(() => {
-    console.log("Состояние isOpen:", isOpen);
-    console.log("Полученные данные с сервера:", propertyData);
-
     if (isOpen && propertyData) {
-      const updatedFormData = {
+      setFormData((prev) => ({
+        ...prev,
         name: propertyData.name || "",
         description: propertyData.description || "",
         price: propertyData.price?.toString() || "",
         square: propertyData.square?.toString() || "",
         type: propertyData.type || "",
         location: propertyData.location || "",
-        image: propertyData.image || [],
-      };
-
-      console.log("Форма после загрузки данных:", updatedFormData);
-      setFormData(updatedFormData);
+        image: propertyData.image || [], // Загружаем существующие пути
+      }));
     }
   }, [isOpen, propertyData]);
 
   const handleInputChange = (field: string, value: string) => {
-    console.log(`Изменение поля "${field}":`, value);
     setFormData((prev) => ({ ...prev, [field]: value }));
-    console.log("Текущее состояние формы после изменения:", {
-      ...formData,
-      [field]: value,
-    });
   };
 
   const handleFileChange = (files: File[]) => {
-    console.log("Изменение файлов:", files);
-    setFormData((prev) => ({ ...prev, image: files }));
-    console.log("Текущее состояние формы после добавления файлов:", {
-      ...formData,
-      image: files,
+    setFormData((prev) => {
+      const existingImages = prev.image || [];
+      const newImages = files.filter(
+        (file) => !existingImages.some((img) => img.name === file.name) // Убираем дубли
+      );
+      return {
+        ...prev,
+        image: [...existingImages, ...newImages],
+      };
     });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log("Данные перед отправкой:", formData);
+    const updatedData = {
+      ...formData,
+      image: formData.image.map(
+        (file) => (typeof file === "string" ? file : file.name) // Убедимся, что отправляем только имена файлов
+      ),
+    };
 
-    // Отправляем актуальные данные из состояния
     updateProperty(
-      { id: propertyId, data: formData },
+      { id: propertyId, data: updatedData },
       {
         onSuccess: () => {
-          console.log("Успешное обновление объекта");
           Swal.fire({
             icon: "success",
             title: "Успешно",
@@ -93,7 +89,6 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
           onClose();
         },
         onError: (error) => {
-          console.error("Ошибка обновления объекта:", error);
           Swal.fire({
             icon: "error",
             title: "Ошибка",
@@ -109,8 +104,7 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
   };
 
   if (isLoading) {
-    console.log("Загрузка данных...");
-    return null; // Можно добавить загрузочный индикатор
+    return null; // Можно добавить индикатор загрузки
   }
 
   return (
@@ -132,7 +126,10 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
             <h2 className="text-2xl font-semibold mb-4">
               Редактировать объект
             </h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form
+              onSubmit={handleSubmit}
+              className="overflow-y-auto max-h-[70vh] space-y-4"
+            >
               <Input
                 label="Название объекта"
                 value={formData.name}
@@ -161,7 +158,7 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
                 onChange={(value) => handleInputChange("location", value)}
               />
               <FileUpload onChange={handleFileChange} />
-              <div className="flex justify-end space-x-4">
+              <div className="flex justify-end space-x-4 mt-4">
                 <Button onClick={onClose} type="button" className="px-4 py-2">
                   Отмена
                 </Button>

@@ -19,14 +19,10 @@ export const MainScreen = () => {
     (property) => property.type === "house"
   );
 
-  useEffect(() => {
-    console.log(myData);
-  }, []);
-
   return (
     <main className="w-full h-[100vh] flex flex-col items-center justify-center px-4">
       {/* Заголовок */}
-      <div className="flex gap-4  justify-center items-center mb-4">
+      {/* <div className="flex gap-4  justify-center items-center mb-4">
         <Button
           onClick={() => navigate("/login")}
           className="bg-[#00a859] text-white hover:bg-[#00a859]/90 "
@@ -39,7 +35,7 @@ export const MainScreen = () => {
         >
           Создать аккаунт
         </Button>
-      </div>
+      </div> */}
       <h1 className="text-dark text-[24px] sm:text-[32px] md:text-[40px] 2xl:text-[48px] font-bold text-center">
         Добро пожаловать в наш каталог недвижимости!
       </h1>
@@ -83,7 +79,15 @@ export const MainScreen = () => {
         >
           Избранное
         </Button>
-        {(myData?.role == "admin" || "manager") && (
+        {myData?.role === "admin" && (
+          <Button
+            onClick={() => navigate("/add-object")}
+            className="bg-[#00a859] text-white hover:bg-[#00a859]/90 "
+          >
+            Добавить объект
+          </Button>
+        )}
+        {myData?.role === "manager" && (
           <Button
             onClick={() => navigate("/add-object")}
             className="bg-[#00a859] text-white hover:bg-[#00a859]/90 "

@@ -3,6 +3,7 @@ export interface IGetPropertiesRDO {
   name: string;
   image: string[];
   square: number;
+  link: string;
   price: number;
   contact: string;
   number: number;

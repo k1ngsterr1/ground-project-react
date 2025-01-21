@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useGetProperties } from "@/entites/model/properties/api/use-get-properties";
 import { FilterDropdown } from "@/entites/ui/filter-dropdown/ui/filter-dropdown";
 import { useGetLocations } from "@/entites/model/properties/api/use-get-locations";
+import { debounce } from "lodash";
 
 export const GroundCatalogueScreen = () => {
   const navigate = useNavigate();
@@ -30,6 +31,7 @@ export const GroundCatalogueScreen = () => {
     squareMin?: number;
     squareMax?: number;
     location?: string;
+    number?: number;
   }>(initialFilters);
 
   // Fetch properties and locations
@@ -102,6 +104,22 @@ export const GroundCatalogueScreen = () => {
     }
   };
 
+  const [searchNumber, setSearchNumber] = useState(""); // Добавляем состояние для номера
+
+  const handleSearchInput = debounce((value: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      number: value ? Number(value) : undefined,
+    }));
+  }, 500);
+
+  // Обработка ввода пользователя
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchNumber(value);
+    handleSearchInput(value); // Запуск debounced обновления
+  };
+
   const handleResetFilters = () => {
     setFilters(initialFilters);
   };
@@ -116,6 +134,15 @@ export const GroundCatalogueScreen = () => {
           </h1>
           <div className="overflow-x-auto">
             <div className="flex flex-nowrap items-center gap-2 sm:gap-4">
+              <div className="flex items-center gap-4">
+                <input
+                  type="number"
+                  placeholder="Введите номер"
+                  className="border rounded-full border-green text-green placeholder:text-green p-2 pl-3 "
+                  value={searchNumber || ""}
+                  onChange={handleInputChange}
+                />
+              </div>
               <FilterDropdown
                 icon={<Banknote className="w-4 h-4" />}
                 label="Цена"

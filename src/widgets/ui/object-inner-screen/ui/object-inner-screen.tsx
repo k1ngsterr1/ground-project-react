@@ -206,6 +206,16 @@ export const ObjectInnerScreen: React.FC<ObjectInnerScreenProps> = ({
                 <span className="mt-12 text-2xl">
                   {data.owner && <span className="text-green">Владелец</span>}
                 </span>
+                <span className="mt-12 text-2xl">
+                  {
+                    <span className="text-black">
+                      Ссылка на объявление:{" "}
+                      <a href={data.link} className="text-green">
+                        {data.link}{" "}
+                      </a>
+                    </span>
+                  }
+                </span>
               </>
             ) : null}
             {myData?.role === "admin" ? (
