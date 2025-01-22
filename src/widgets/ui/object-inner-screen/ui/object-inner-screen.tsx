@@ -198,15 +198,18 @@ export const ObjectInnerScreen: React.FC<ObjectInnerScreenProps> = ({
             <Gallery images={data?.image || images} />
             {["admin", "manager"].includes(myData?.role as string) ? (
               <>
-                <span className="mt-12 text-2xl">
+                <span className="mt-12 text-xl">
                   {data.agent && (
                     <span className="text-green">Собственник</span>
                   )}
                 </span>
-                <span className="mt-12 text-2xl">
+                <span className="mt-12 text-xl">
                   {data.owner && <span className="text-green">Владелец</span>}
                 </span>
-                <span className="mt-12 text-2xl">
+                <span className="mt-12 text-xl">
+                  Кадастровый номер: {data.number}
+                </span>
+                <span className="mt-12 text-xl">
                   {
                     <span className="text-black">
                       Ссылка на объявление:{" "}
@@ -220,7 +223,7 @@ export const ObjectInnerScreen: React.FC<ObjectInnerScreenProps> = ({
             ) : null}
             {myData?.role === "admin" ? (
               <>
-                <span className="mt-12 text-2xl">
+                <span className="mt-12 text-xl">
                   Контакт продавца:
                   <a href={`tel:${data.contact}`} className="text-green">
                     {data.contact}
@@ -240,7 +243,7 @@ export const ObjectInnerScreen: React.FC<ObjectInnerScreenProps> = ({
                 square={data?.square}
               />
             )}
-            <PriceTab price={data?.price} number={data?.number} />
+            <PriceTab price={data?.price} number={data?.id} />
             <div className="flex flex-col sm:flex-row items-center gap-4">
               <Button
                 className="w-full sm:w-[240px] h-[45px] text-sm"
