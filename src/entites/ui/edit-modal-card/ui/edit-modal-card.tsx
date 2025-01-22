@@ -66,17 +66,32 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const updatedData = {
-      ...formData,
-      image: formData.image.map(
-        (file) => (typeof file === "string" ? file : file.name) // Убедимся, что отправляем только имена файлов
-      ),
-    };
+    const formData = new FormData();
+    formData.append("name", formData.name);
+    formData.append("description", formData.description);
+    formData.append("price", formData.price);
+    formData.append("square", formData.square);
+    formData.append("type", formData.type);
+    formData.append("location", formData.location);
+
+    // Добавляем существующие ссылки как строки
+    formData.image.forEach((img) => {
+      if (typeof img === "string") {
+        formData.append("image", img);
+      }
+    });
+
+    // Добавляем новые файлы
+    formData.image.forEach((img) => {
+      if (img instanceof File) {
+        formData.append("image", img); // Ключ 'image' совпадает с FilesInterceptor
+      }
+    });
 
     updateProperty(
-      { id: propertyId, data: updatedData },
+      { id: propertyId, data: formData },
       {
-        onSuccess: () => {
+        onSuccess: (response) => {
           Swal.fire({
             icon: "success",
             title: "Успешно",
