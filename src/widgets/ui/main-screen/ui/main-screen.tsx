@@ -22,20 +22,14 @@ export const MainScreen = () => {
   return (
     <main className="w-full h-[100vh] flex flex-col items-center justify-center px-4">
       {/* Заголовок */}
-      {/* <div className="flex gap-4  justify-center items-center mb-4">
-        <Button
-          onClick={() => navigate("/login")}
-          className="bg-[#00a859] text-white hover:bg-[#00a859]/90 "
-        >
+      <div className="flex gap-4  justify-center items-center mb-4">
+        <span onClick={() => navigate("/login")} className=" text-green">
           Войти
-        </Button>
-        <Button
-          onClick={() => navigate("/register")}
-          className="bg-[#00a859] text-white hover:bg-[#00a859]/90 "
-        >
+        </span>
+        <span onClick={() => navigate("/register")} className=" text-green">
           Создать аккаунт
-        </Button>
-      </div> */}
+        </span>
+      </div>
       <h1 className="text-dark text-[24px] sm:text-[32px] md:text-[40px] 2xl:text-[48px] font-bold text-center">
         Добро пожаловать в наш каталог недвижимости!
       </h1>
