@@ -20,7 +20,7 @@ export const MainScreen = () => {
   );
 
   return (
-    <main className="w-full h-[100vh] flex flex-col items-center justify-center px-4">
+    <main className="w-full min-h-[100vh] flex flex-col items-center justify-center px-4">
       {/* Заголовок */}
       <div className="flex gap-4  justify-center items-center mb-4">
         <span onClick={() => navigate("/login")} className=" text-green">
