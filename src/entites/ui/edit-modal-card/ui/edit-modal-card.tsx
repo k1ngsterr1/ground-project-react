@@ -21,7 +21,7 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
   const { data: propertyData, isLoading } = useGetProperty(propertyId);
   const { mutate: updateProperty, isPending: isUpdating } = useUpdateProperty();
 
-  const [formData, setFormData] = useState({
+  const [formDataState, setFormData] = useState({
     name: "",
     description: "",
     price: "",
@@ -33,7 +33,7 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
 
   useEffect(() => {
     if (isOpen && propertyData) {
-      setFormData((prev) => ({
+      setFormData((prev: any) => ({
         ...prev,
         name: propertyData.name || "",
         description: propertyData.description || "",
@@ -51,10 +51,10 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
   };
 
   const handleFileChange = (files: File[]) => {
-    setFormData((prev) => {
+    setFormData((prev: any) => {
       const existingImages = prev.image || [];
       const newImages = files.filter(
-        (file) => !existingImages.some((img) => img.name === file.name) // Убираем дубли
+        (file) => !existingImages.some((img: any) => img.name === file.name) // Убираем дубли
       );
       return {
         ...prev,
@@ -66,30 +66,34 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Создаём объект FormData
     const formData = new FormData();
-    formData.append("name", formData.name);
-    formData.append("description", formData.description);
-    formData.append("price", formData.price);
-    formData.append("square", formData.square);
-    formData.append("type", formData.type);
-    formData.append("location", formData.location);
+
+    // Добавляем поля из formData в FormData
+    formData.append("name", formDataState.name); // Используйте state вместо обращения к самому объекту FormData
+    formData.append("description", formDataState.description);
+    formData.append("price", formDataState.price);
+    formData.append("square", formDataState.square);
+    formData.append("type", formDataState.type);
+    formData.append("location", formDataState.location);
 
     // Добавляем существующие ссылки как строки
-    formData.image.forEach((img) => {
+    formDataState.image.forEach((img) => {
       if (typeof img === "string") {
-        formData.append("image", img);
+        formData.append("image", img); // Ссылки на изображения
       }
     });
 
     // Добавляем новые файлы
-    formData.image.forEach((img) => {
+    formDataState.image.forEach((img) => {
       if (img instanceof File) {
-        formData.append("image", img); // Ключ 'image' совпадает с FilesInterceptor
+        formData.append("image", img); // Новые файлы
       }
     });
 
+    // Отправляем данные на сервер
     updateProperty(
-      { id: propertyId, data: formData },
+      { id: propertyId, data: formDataState as any },
       {
         onSuccess: (response) => {
           Swal.fire({
@@ -147,29 +151,29 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
             >
               <Input
                 label="Название объекта"
-                value={formData.name}
+                value={formDataState.name}
                 onChange={(value) => handleInputChange("name", value)}
               />
               <Input
                 label="Описание"
-                value={formData.description}
+                value={formDataState.description}
                 onChange={(value) => handleInputChange("description", value)}
               />
               <Input
                 label="Цена"
                 type="number"
-                value={formData.price}
+                value={formDataState.price}
                 onChange={(value) => handleInputChange("price", value)}
               />
               <Input
                 label="Площадь"
                 type="number"
-                value={formData.square}
+                value={formDataState.square}
                 onChange={(value) => handleInputChange("square", value)}
               />
               <Input
                 label="Локация"
-                value={formData.location}
+                value={formDataState.location}
                 onChange={(value) => handleInputChange("location", value)}
               />
               <FileUpload onChange={handleFileChange} />
