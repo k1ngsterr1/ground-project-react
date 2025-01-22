@@ -119,7 +119,7 @@ export function Gallery({ images }: GalleryProps) {
           className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide max-w-[640px] pl-8 pr-8"
           ref={thumbnailRef}
         >
-          {images.slice(0, 8).map((image, index) => (
+          {images.map((image, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
