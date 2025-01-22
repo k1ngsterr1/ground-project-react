@@ -4,14 +4,11 @@ import { Gallery } from "@/features/ui/object-gallery/ui/object-gallery";
 import { ObjectInfo } from "@/features/ui/object-info/ui/object-info";
 import { PriceTab } from "@/features/ui/price-tab/ui/price-tab";
 import { Heart, HeartOff, Trash } from "lucide-react";
-import "sweetalert2/dist/sweetalert2.min.css";
 import "react-loading-skeleton/dist/skeleton.css";
 import image from "@/assets/catalogue_mockup.png";
 import { useShareModalStore } from "@/entites/ui/modal/model/use-share-modal-store";
 import { Breadcrumb } from "@/shared/ui/breadcrumbs/breadcrumbs";
 import { Button } from "@/shared/ui/button/button";
-import Swal from "sweetalert2";
-import "sweetalert2/dist/sweetalert2.min.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAddFavorite } from "@/entites/model/favorites/use-add-favorite";
 import { useGetMe } from "@/entites/model/user/user-auth/use-get-me";
@@ -84,54 +81,20 @@ export const ObjectInnerScreen: React.FC<ObjectInnerScreenProps> = ({
   const handleAddToFavorites = () => {
     const userId = userData?.id.toString();
     if (!userId) {
-      Swal.fire({
-        icon: "error",
-        title: "Ошибка",
-        text: "Необходимо авторизоваться",
-        showConfirmButton: false,
-        timer: 3000,
-        toast: true,
-        position: "bottom-right",
-      });
       return;
     }
 
     if (!userId || !propertyId) {
-      Swal.fire({
-        icon: "error",
-        title: "Ошибка",
-        text: "Произошла ошибка при добавлении в избранное",
-        showConfirmButton: false,
-        timer: 3000,
-        toast: true,
-        position: "bottom-right",
-      });
       return;
     }
 
     if (isInFavorites) {
       deleteFavorite({ userId, propertyId });
-      Swal.fire({
-        icon: "success",
-        title: "Удалено из избранного",
-        text: "Объект успешно удален из избранного",
-        showConfirmButton: false,
-        timer: 3000,
-        toast: true,
-        position: "bottom-right",
-      });
+
       return;
     }
 
     addFavorite({ userId, propertyId });
-    Swal.fire({
-      icon: "success",
-      title: "Добавлено в избранное!",
-      showConfirmButton: false,
-      timer: 3000,
-      toast: true,
-      position: "bottom-right",
-    });
   };
 
   const handleDelete = (propertyID: number) => {

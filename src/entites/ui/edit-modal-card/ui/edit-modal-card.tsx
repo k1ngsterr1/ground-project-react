@@ -5,7 +5,6 @@ import { FileUpload } from "@/features/ui/file-upload/ui/file-upload";
 import { useUpdateProperty } from "@/entites/model/properties/api/use-update-property";
 import { useGetProperty } from "@/entites/model/properties/api/use-get-property";
 import { motion, AnimatePresence } from "framer-motion";
-import Swal from "sweetalert2";
 
 interface EditPropertyModalProps {
   isOpen: boolean;
@@ -96,28 +95,9 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
       { id: propertyId, data: formDataState as any },
       {
         onSuccess: (response) => {
-          Swal.fire({
-            icon: "success",
-            title: "Успешно",
-            text: "Объект успешно обновлен",
-            toast: true,
-            position: "bottom-right",
-            timer: 3000,
-            showConfirmButton: false,
-          });
           onClose();
         },
-        onError: (error) => {
-          Swal.fire({
-            icon: "error",
-            title: "Ошибка",
-            text: "Не удалось обновить объект",
-            toast: true,
-            position: "bottom-right",
-            timer: 3000,
-            showConfirmButton: false,
-          });
-        },
+        onError: (error) => {},
       }
     );
   };

@@ -4,7 +4,6 @@ import { Input } from "@/shared/ui/input/input";
 import { Select } from "@/shared/ui/selector/selector";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
 
 import { useAddProperty } from "@/entites/model/favorites/use-add-property";
 
@@ -69,28 +68,10 @@ export const AddObjectScreen = () => {
     e.preventDefault();
 
     if (!formData.type) {
-      Swal.fire({
-        icon: "error",
-        title: "Ошибка",
-        text: "Выберите тип объекта",
-        toast: true,
-        position: "bottom-right",
-        timer: 3000,
-        showConfirmButton: false,
-      });
       return;
     }
 
     if (selectedFiles.length === 0) {
-      Swal.fire({
-        icon: "error",
-        title: "Ошибка",
-        text: "Добавьте хотя бы одно фото",
-        toast: true,
-        position: "bottom-right",
-        timer: 3000,
-        showConfirmButton: false,
-      });
       return;
     }
 
@@ -103,28 +84,9 @@ export const AddObjectScreen = () => {
 
     addProperty(propertyData, {
       onSuccess: () => {
-        Swal.fire({
-          icon: "success",
-          title: "Успешно",
-          text: "Объект добавлен",
-          toast: true,
-          position: "bottom-right",
-          timer: 3000,
-          showConfirmButton: false,
-        });
         navigate("/houses-catalogue");
       },
-      onError: () => {
-        Swal.fire({
-          icon: "error",
-          title: "Ошибка",
-          text: "Не удалось добавить объект",
-          toast: true,
-          position: "bottom-right",
-          timer: 3000,
-          showConfirmButton: false,
-        });
-      },
+      onError: () => {},
     });
   };
 
