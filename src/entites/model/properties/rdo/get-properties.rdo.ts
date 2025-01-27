@@ -8,6 +8,7 @@ export interface IGetPropertiesRDO {
   contact: string;
   number: number;
   agent: boolean;
+  details: string;
   owner: boolean;
   type: string;
   description: string;

@@ -172,8 +172,8 @@ export const AddObjectScreen = () => {
               <textarea
                 className="w-full px-3 py-2 border border-[#d9d9d9] rounded-md min-h-[120px] focus:outline-none focus:ring-2 focus:ring-[#00a859]"
                 placeholder="Примечание"
-                value={formData.description}
-                onChange={handleInputChange("description")}
+                value={formData.details}
+                onChange={handleInputChange("details")}
               />
             </div>
 

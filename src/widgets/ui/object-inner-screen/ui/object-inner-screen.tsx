@@ -172,6 +172,7 @@ export const ObjectInnerScreen: React.FC<ObjectInnerScreenProps> = ({
                 <span className="mt-12 text-xl">
                   Кадастровый номер: {data.number}
                 </span>
+                <span className="mt-12 text-xl">Детали: {data.details}</span>
                 <span className="mt-12 text-xl">
                   {
                     <span className="text-black">
