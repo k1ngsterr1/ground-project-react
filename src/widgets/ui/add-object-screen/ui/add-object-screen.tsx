@@ -25,6 +25,7 @@ export const AddObjectScreen = () => {
     link: "",
     description: "",
     location: "",
+    details: "",
     number: "",
     contact: "",
     agent: true,
@@ -160,6 +161,17 @@ export const AddObjectScreen = () => {
               <textarea
                 className="w-full px-3 py-2 border border-[#d9d9d9] rounded-md min-h-[120px] focus:outline-none focus:ring-2 focus:ring-[#00a859]"
                 placeholder="Описание"
+                value={formData.description}
+                onChange={handleInputChange("description")}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-[#2f2f2f]">
+                Примечание
+              </label>
+              <textarea
+                className="w-full px-3 py-2 border border-[#d9d9d9] rounded-md min-h-[120px] focus:outline-none focus:ring-2 focus:ring-[#00a859]"
+                placeholder="Примечание"
                 value={formData.description}
                 onChange={handleInputChange("description")}
               />
