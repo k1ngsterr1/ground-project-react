@@ -5,12 +5,19 @@ import { FileUpload } from "@/features/ui/file-upload/ui/file-upload";
 import { useUpdateProperty } from "@/entites/model/properties/api/use-update-property";
 import { useGetProperty } from "@/entites/model/properties/api/use-get-property";
 import { motion, AnimatePresence } from "framer-motion";
+import { Select } from "@/shared/ui/selector/selector";
 
 interface EditPropertyModalProps {
   isOpen: boolean;
   onClose: () => void;
   propertyId: number;
 }
+
+const propertyTypes = [
+  { value: "", label: "Выберите тип объекта" },
+  { value: "ground", label: "Земельный участок" },
+  { value: "house", label: "Дом" },
+];
 
 export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
   isOpen,
@@ -26,6 +33,8 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
     price: "",
     square: "",
     type: "",
+    details: "",
+    number: "",
     location: "",
     image: [], // Существующие пути к фотографиям
   });
@@ -140,6 +149,16 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
                 onChange={(value) => handleInputChange("description", value)}
               />
               <Input
+                label="Кадастровый номер"
+                value={formDataState.number}
+                onChange={(value) => handleInputChange("number", value)}
+              />
+              <Input
+                label="Примечание"
+                value={formDataState.details}
+                onChange={(value) => handleInputChange("details", value)}
+              />
+              <Input
                 label="Цена"
                 type="number"
                 value={formDataState.price}
@@ -151,6 +170,13 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
                 value={formDataState.square}
                 onChange={(value) => handleInputChange("square", value)}
               />
+              {/* <Select
+                label="Тип объекта"
+                options={propertyTypes}
+                value={formDataState.type}
+                onChange={handleInputChange("type")}
+              /> */}
+
               <Input
                 label="Локация"
                 value={formDataState.location}
