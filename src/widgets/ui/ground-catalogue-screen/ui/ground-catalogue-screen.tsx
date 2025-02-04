@@ -52,27 +52,34 @@ export const GroundCatalogueScreen = () => {
   // Update filters
   const handlePriceSelect = (option: string) => {
     switch (option) {
-      case "До 1 млн":
-        setFilters((prev) => ({ ...prev, priceMin: 0, priceMax: 1000000 }));
+      case "До 7 млн":
+        setFilters((prev) => ({ ...prev, priceMin: 0, priceMax: 7000000 }));
         break;
-      case "1-5 млн":
+      case "7-10 млн":
         setFilters((prev) => ({
           ...prev,
-          priceMin: 1000000,
-          priceMax: 5000000,
-        }));
-        break;
-      case "5-10 млн":
-        setFilters((prev) => ({
-          ...prev,
-          priceMin: 5000000,
+          priceMin: 7000000,
           priceMax: 10000000,
         }));
         break;
-      case "Более 10 млн":
+      case "10-15 млн":
         setFilters((prev) => ({
           ...prev,
           priceMin: 10000000,
+          priceMax: 15000000,
+        }));
+        break;
+      case "15-20 млн":
+        setFilters((prev) => ({
+          ...prev,
+          priceMin: 15000000,
+          priceMax: 20000000,
+        }));
+        break;
+      case "20 и более":
+        setFilters((prev) => ({
+          ...prev,
+          priceMin: 20000000,
           priceMax: undefined,
         }));
         break;
@@ -146,7 +153,13 @@ export const GroundCatalogueScreen = () => {
               <FilterDropdown
                 icon={<Banknote className="w-4 h-4" />}
                 label="Цена"
-                options={["До 1 млн", "1-5 млн", "5-10 млн", "Более 10 млн"]}
+                options={[
+                  "До 7 млн",
+                  "7-10 млн",
+                  "10-15 млн",
+                  "15-20 млн",
+                  "20 и более",
+                ]}
                 onSelect={handlePriceSelect}
               />
               {locations && (
