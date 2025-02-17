@@ -9,6 +9,7 @@ export const useGetProperties = (filters?: {
   squareMax?: number;
   location?: string;
   number?: number; // Добавляем number в параметры
+  name?: string;
 }) => {
   return useQuery<IGetPropertiesRDO[], Error>({
     queryKey: ["propertiesData", filters], // Фильтры в queryKey для кеширования

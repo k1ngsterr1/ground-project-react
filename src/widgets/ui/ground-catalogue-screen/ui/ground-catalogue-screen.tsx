@@ -22,6 +22,7 @@ export const GroundCatalogueScreen = () => {
     squareMin: undefined,
     squareMax: undefined,
     location: undefined,
+    name: undefined,
   };
 
   // Filters state
@@ -32,6 +33,7 @@ export const GroundCatalogueScreen = () => {
     squareMax?: number;
     location?: string;
     number?: number;
+    name?: string;
   }>(initialFilters);
 
   // Fetch properties and locations
@@ -78,6 +80,7 @@ export const GroundCatalogueScreen = () => {
         break;
     }
   };
+
   const handleLocationSelect = (option: string) => {
     setFilters((prev) => ({ ...prev, location: option }));
   };
@@ -104,6 +107,7 @@ export const GroundCatalogueScreen = () => {
   };
 
   const [searchNumber, setSearchNumber] = useState(""); // Добавляем состояние для номера
+  const [searchText, setSearchText] = useState(""); // Добавляем состояние для номера
 
   const handleSearchInput = debounce((value: string) => {
     setFilters((prev) => ({
@@ -116,8 +120,21 @@ export const GroundCatalogueScreen = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchNumber(value);
-    handleSearchInput(value); // Запуск debounced обновления
+    handleSearchInput(value);
   };
+
+  const handleTextInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchText(value);
+    handleNameInput(value);
+  };
+
+  const handleNameInput = debounce((value: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      name: value || undefined, // Update the 'name' filter correctly
+    }));
+  }, 500);
 
   const handleResetFilters = () => {
     setFilters(initialFilters);
@@ -134,6 +151,13 @@ export const GroundCatalogueScreen = () => {
           <div className="overflow-x-auto">
             <div className="flex flex-nowrap items-center gap-2 sm:gap-4">
               <div className="flex items-center gap-4">
+                <input
+                  type="text"
+                  placeholder="Введите имя"
+                  className="border rounded-full border-green text-green placeholder:text-green p-2 pl-3 "
+                  value={searchText || ""}
+                  onChange={handleTextInputChange}
+                />
                 <input
                   type="number"
                   placeholder="Введите номер"

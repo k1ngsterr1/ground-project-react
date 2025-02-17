@@ -61,7 +61,7 @@ export function FilterDropdown({
             className="fixed z-[1000] mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 overflow-hidden"
           >
             <div
-              className="py-1"
+              className="py-1 max-h-60 overflow-y-auto"
               role="menu"
               aria-orientation="vertical"
               aria-labelledby="options-menu"

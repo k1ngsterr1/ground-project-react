@@ -6,7 +6,6 @@ import { Breadcrumb } from "@/shared/ui/breadcrumbs/breadcrumbs";
 import { Button } from "@/shared/ui/button/button";
 import { Banknote, MapPin, Square } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
 import { useGetProperties } from "@/entites/model/properties/api/use-get-properties";
 import { FilterDropdown } from "@/entites/ui/filter-dropdown/ui/filter-dropdown";
 import { useGetLocations } from "@/entites/model/properties/api/use-get-locations";
@@ -16,6 +15,15 @@ export const HousesCatalogueScreen = () => {
   const navigate = useNavigate();
   const { selectedIds } = useComparisonStore();
 
+  const initialFilters = {
+    priceMin: undefined,
+    priceMax: undefined,
+    squareMin: undefined,
+    squareMax: undefined,
+    location: undefined,
+    name: undefined,
+  };
+
   // Filters state
   const [filters, setFilters] = useState<{
     priceMin?: number;
@@ -24,9 +32,11 @@ export const HousesCatalogueScreen = () => {
     squareMax?: number;
     location?: string;
     number?: number;
-  }>({});
+    name?: string;
+  }>(initialFilters);
 
   const [searchNumber, setSearchNumber] = useState(""); // Добавляем состояние для номера
+  const [searchText, setSearchText] = useState(""); // Добавляем состояние для номера
   const { data: properties, isLoading } = useGetProperties(filters);
   const { data: locations } = useGetLocations();
 
@@ -50,18 +60,23 @@ export const HousesCatalogueScreen = () => {
     handleSearchInput(value); // Запуск debounced обновления
   };
 
+  const handleNameInput = debounce((value: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      name: value || undefined, // Update the 'name' filter correctly
+    }));
+  }, 500);
+
+  const handleTextInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchText(value);
+    handleNameInput(value);
+  };
+
   // Filtered properties by type (house)
   const filteredProperties = properties?.filter(
     (property) => property.type === "house"
   );
-
-  const initialFilters = {
-    priceMin: undefined,
-    priceMax: undefined,
-    squareMin: undefined,
-    squareMax: undefined,
-    location: undefined,
-  };
 
   // Update filters
   const handlePriceSelect = (option: string) => {
@@ -140,6 +155,13 @@ export const HousesCatalogueScreen = () => {
           <div className="overflow-x-auto">
             <div className="flex flex-nowrap items-center gap-2 sm:gap-4">
               <div className="flex items-center gap-4">
+                <input
+                  type="text"
+                  placeholder="Введите имя"
+                  className="border rounded-full border-green text-green placeholder:text-green p-2 pl-3 "
+                  value={searchText || ""}
+                  onChange={handleTextInputChange}
+                />
                 <input
                   type="number"
                   placeholder="Введите номер"
