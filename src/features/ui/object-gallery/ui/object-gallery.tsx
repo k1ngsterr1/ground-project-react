@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Maximize, X } from "lucide-react";
 
 interface GalleryProps {
   images: string[];
@@ -10,7 +10,9 @@ interface GalleryProps {
 
 export function Gallery({ images }: GalleryProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const thumbnailRef = useRef<HTMLDivElement>(null);
+  const fullScreenRef = useRef<HTMLDivElement>(null);
 
   const slideVariants = {
     enter: (direction: number) => ({
@@ -48,10 +50,26 @@ export function Gallery({ images }: GalleryProps) {
     }
   };
 
+  const toggleFullScreen = () => {
+    if (!isFullScreen) {
+      fullScreenRef.current?.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+    setIsFullScreen(!isFullScreen);
+  };
+
   return (
     <div className="space-y-4">
       {/* Main Image */}
-      <div className="relative w-full aspect-[16/9] overflow-hidden rounded-lg">
+      <div
+        className={`relative w-full aspect-[16/9] overflow-hidden rounded-lg ${
+          isFullScreen
+            ? "fixed inset-0 bg-black z-50 flex items-center justify-center"
+            : ""
+        }`}
+        ref={fullScreenRef}
+      >
         <AnimatePresence initial={false} custom={currentIndex}>
           <motion.div
             key={currentIndex}
@@ -80,7 +98,8 @@ export function Gallery({ images }: GalleryProps) {
             <img
               src={images[currentIndex]}
               alt={`Property image ${currentIndex + 1}`}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover cursor-pointer"
+              onClick={toggleFullScreen}
             />
           </motion.div>
         </AnimatePresence>
@@ -100,6 +119,18 @@ export function Gallery({ images }: GalleryProps) {
           disabled={currentIndex === images.length - 1}
         >
           <ChevronRight className="w-6 h-6" />
+        </button>
+
+        {/* Full-Screen Toggle Button */}
+        <button
+          onClick={toggleFullScreen}
+          className="absolute top-4 right-4 p-2 bg-white/80 hover:bg-white rounded-full transition-colors"
+        >
+          {isFullScreen ? (
+            <X className="w-6 h-6" />
+          ) : (
+            <Maximize className="w-6 h-6" />
+          )}
         </button>
       </div>
 
