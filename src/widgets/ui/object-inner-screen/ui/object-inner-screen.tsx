@@ -132,119 +132,123 @@ export const ObjectInnerScreen: React.FC<ObjectInnerScreenProps> = ({
   }
 
   return (
-    <div className="min-h-screen bg-[#fafafa] p-4 sm:p-6 mt-16">
-      <div className="max-w-7xl mx-auto">
-        <Breadcrumb items={breadcrumbItems} />
-        <div className="w-full flex items-center justify-between">
-          <h1 className="text-[32px] sm:text-[32px] md:text-[40px] lg:text-[48px] font-bold text-[#2f2f2f] text-left lg:text-left">
-            {data?.name}
-          </h1>
-          <div className="flex items-center gap-4">
-            {["manager", "admin"].includes(myData?.role as string) && (
-              <Button
-                onClick={() => setIsEditModalOpen(true)}
-                className="bg-blue-500 text-white"
-              >
-                Редактировать объект
-              </Button>
-            )}
-            {myData?.role === "admin" && (
-              <Trash
-                onClick={() => handleDelete(Number(id))}
-                className="text-red-500 cursor-pointer transition-colors hover:text-red-700"
-              />
-            )}
-          </div>
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr,520px] gap-8 mt-8">
-          <div className="space-y-6 flex flex-col">
-            <Gallery images={data?.image || images} />
-            {["admin", "manager"].includes(myData?.role as string) ? (
-              <>
-                <span className="mt-12 text-xl">
-                  {data.agent && (
-                    <span className="text-green">Собственник</span>
-                  )}
-                </span>
-                <span className="mt-12 text-xl">
-                  {data.owner && <span className="text-green">Владелец</span>}
-                </span>
-                <span className="mt-12 text-xl">
-                  Кадастровый номер: {data.number}
-                </span>
-                <span className="mt-12 text-xl">Детали: {data.details}</span>
-                <span className="mt-12 text-xl">
-                  {
-                    <span className="text-black">
-                      Ссылка на объявление:{" "}
-                      <a href={data.link} className="text-green">
-                        {data.link}{" "}
-                      </a>
-                    </span>
-                  }
-                </span>
-              </>
-            ) : null}
-            {myData?.role === "admin" ? (
-              <>
-                <span className="mt-12 text-xl">
-                  Контакт продавца:
-                  <a href={`tel:${data.contact}`} className="text-green">
-                    {data.contact}
-                  </a>
-                </span>
-              </>
-            ) : (
-              <></>
-            )}
-          </div>
-          <div className="space-y-6">
-            <ObjectDescription text={data?.description} />
-            {myData?.role === "admin" && (
-              <ObjectInfo
-                type={data?.type}
-                location={data?.location}
-                square={data?.square}
-              />
-            )}
-            <PriceTab price={data?.price} number={data?.id} />
-            <div className="flex flex-col sm:flex-row items-center gap-4">
-              <Button
-                className="w-full sm:w-[240px] h-[45px] text-sm"
-                variant="blue"
-                onClick={() => openModal()}
-              >
-                Поделиться
-              </Button>
-              <Button
-                className="w-full sm:w-[240px] h-[45px]"
-                variant={isInFavorites ? "transparent_red" : "transparent_blue"}
-                onClick={handleAddToFavorites}
-              >
-                <div className="flex items-center justify-center gap-2 text-sm">
-                  {isInFavorites ? (
-                    <>
-                      <HeartOff className="w-5 h-5" />
-                      Удалить из избранного
-                    </>
-                  ) : (
-                    <>
-                      <Heart className="w-5 h-5" />
-                      Добавить в избранное
-                    </>
-                  )}
-                </div>
-              </Button>
+    <>
+      <div className="min-h-screen bg-[#fafafa] p-4 sm:p-6 mt-16">
+        <div className="max-w-7xl mx-auto">
+          <Breadcrumb items={breadcrumbItems} />
+          <div className="w-full flex items-center justify-between">
+            <h1 className="text-[32px] sm:text-[32px] md:text-[40px] lg:text-[48px] font-bold text-[#2f2f2f] text-left lg:text-left">
+              {data?.name}
+            </h1>
+            <div className="flex items-center gap-4">
+              {["manager", "admin"].includes(myData?.role as string) && (
+                <Button
+                  onClick={() => setIsEditModalOpen(true)}
+                  className="bg-blue-500 text-white"
+                >
+                  Редактировать объект
+                </Button>
+              )}
+              {myData?.role === "admin" && (
+                <Trash
+                  onClick={() => handleDelete(Number(id))}
+                  className="text-red-500 cursor-pointer transition-colors hover:text-red-700"
+                />
+              )}
             </div>
-            <BrokerTab />
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr,520px] gap-8 mt-8">
+            <div className="space-y-6 flex flex-col">
+              <Gallery images={data?.image || images} />
+              {["admin", "manager"].includes(myData?.role as string) ? (
+                <>
+                  <span className="mt-12 text-xl">
+                    {data.agent && (
+                      <span className="text-green">Собственник</span>
+                    )}
+                  </span>
+                  <span className="mt-12 text-xl">
+                    {data.owner && <span className="text-green">Владелец</span>}
+                  </span>
+                  <span className="mt-12 text-xl">
+                    Кадастровый номер: {data.number}
+                  </span>
+                  <span className="mt-12 text-xl">Детали: {data.details}</span>
+                  <span className="mt-12 text-xl">
+                    {
+                      <span className="text-black">
+                        Ссылка на объявление:{" "}
+                        <a href={data.link} className="text-green">
+                          {data.link}{" "}
+                        </a>
+                      </span>
+                    }
+                  </span>
+                </>
+              ) : null}
+              {myData?.role === "admin" ? (
+                <>
+                  <span className="mt-12 text-xl">
+                    Контакт продавца:
+                    <a href={`tel:${data.contact}`} className="text-green">
+                      {data.contact}
+                    </a>
+                  </span>
+                </>
+              ) : (
+                <></>
+              )}
+            </div>
+            <div className="space-y-6">
+              <ObjectDescription text={data?.description} />
+              {myData?.role === "admin" && (
+                <ObjectInfo
+                  type={data?.type}
+                  location={data?.location}
+                  square={data?.square}
+                />
+              )}
+              <PriceTab price={data?.price} number={data?.id} />
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <Button
+                  className="w-full sm:w-[240px] h-[45px] text-sm"
+                  variant="blue"
+                  onClick={() => openModal()}
+                >
+                  Поделиться
+                </Button>
+                <Button
+                  className="w-full sm:w-[240px] h-[45px]"
+                  variant={
+                    isInFavorites ? "transparent_red" : "transparent_blue"
+                  }
+                  onClick={handleAddToFavorites}
+                >
+                  <div className="flex items-center justify-center gap-2 text-sm">
+                    {isInFavorites ? (
+                      <>
+                        <HeartOff className="w-5 h-5" />
+                        Удалить из избранного
+                      </>
+                    ) : (
+                      <>
+                        <Heart className="w-5 h-5" />
+                        Добавить в избранное
+                      </>
+                    )}
+                  </div>
+                </Button>
+              </div>
+              <BrokerTab />
+            </div>
           </div>
         </div>
+        <EditPropertyModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          propertyId={Number(id)}
+        />
       </div>
-      <EditPropertyModal
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        propertyId={Number(id)}
-      />
-    </div>
+    </>
   );
 };

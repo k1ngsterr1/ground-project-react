@@ -1,6 +1,6 @@
 "use client";
 
-import { ImagePlus, X } from "lucide-react";
+import { ImagePlus, X, Video } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
@@ -40,11 +40,11 @@ export function FileUpload({ onChange }: FileUploadProps) {
     },
     [onChange]
   );
-
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
       "image/*": [".png", ".jpg", ".jpeg"],
+      "video/*": [".mp4", ".mov", ".avi", ".mkv"],
     },
   });
 
@@ -64,27 +64,35 @@ export function FileUpload({ onChange }: FileUploadProps) {
           </p>
         </div>
       </div>
-
       {files.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {files.map((file, index) => (
-            <div key={index} className="relative group">
-              <img
-                src={URL.createObjectURL(file)}
-                alt={`Preview ${index + 1}`}
-                className="w-full h-32 object-cover rounded-lg"
-              />
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  removeFile(index);
-                }}
-                className="absolute top-2 right-2 p-1 bg-red-500 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          ))}
+          {files.map((file, index) => {
+            const isVideo = file.type.startsWith("video/");
+            return (
+              <div key={index} className="relative group">
+                {isVideo ? (
+                  <div className="w-full h-32 flex items-center border border-main justify-center bg-gray-200 rounded-lg">
+                    <Video className="w-12 h-12  text-green" />
+                  </div>
+                ) : (
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt={`Preview ${index + 1}`}
+                    className="w-full h-32 object-cover rounded-lg"
+                  />
+                )}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeFile(index);
+                  }}
+                  className="absolute top-2 right-2 p-1 bg-red-500 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

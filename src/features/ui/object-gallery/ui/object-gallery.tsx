@@ -95,16 +95,26 @@ export function Gallery({ images }: GalleryProps) {
             }}
             className="absolute inset-0 w-full h-full"
           >
-            <img
-              src={images[currentIndex]}
-              alt={`Property image ${currentIndex + 1}`}
-              className="w-full h-full object-cover cursor-pointer"
-              onClick={toggleFullScreen}
-            />
+            {images[currentIndex].endsWith(".mov") ||
+            images[currentIndex].endsWith(".mp4") ||
+            images[currentIndex].endsWith(".avi") ||
+            images[currentIndex].endsWith(".mkv") ? (
+              <video
+                src={images[currentIndex]}
+                className="w-full h-full object-cover cursor-pointer"
+                controls
+              />
+            ) : (
+              <img
+                src={images[currentIndex]}
+                alt={`Property image ${currentIndex + 1}`}
+                className="w-full h-full object-cover cursor-pointer"
+                onClick={toggleFullScreen}
+              />
+            )}
           </motion.div>
         </AnimatePresence>
 
-        {/* Navigation Buttons */}
         <button
           onClick={() => paginate(-1)}
           className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white transition-colors disabled:opacity-50"
@@ -112,7 +122,6 @@ export function Gallery({ images }: GalleryProps) {
         >
           <ChevronLeft className="w-6 h-6" />
         </button>
-
         <button
           onClick={() => paginate(1)}
           className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white transition-colors disabled:opacity-50"
@@ -120,8 +129,6 @@ export function Gallery({ images }: GalleryProps) {
         >
           <ChevronRight className="w-6 h-6" />
         </button>
-
-        {/* Full-Screen Toggle Button */}
         <button
           onClick={toggleFullScreen}
           className="absolute top-4 right-4 p-2 bg-white/80 hover:bg-white rounded-full transition-colors"
