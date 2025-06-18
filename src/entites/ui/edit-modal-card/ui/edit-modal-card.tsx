@@ -197,11 +197,20 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
                 value={formDataState.name}
                 onChange={(value) => handleInputChange("name", value)}
               />
-              <Input
-                label="Описание"
-                value={formDataState.description}
-                onChange={(value) => handleInputChange("description", value)}
-              />
+              {/* Высокий textarea для описания */}
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Описание
+                </label>
+                <textarea
+                  className="w-full border rounded px-3 py-2 min-h-[120px] resize-vertical focus:outline-none focus:ring-2 focus:ring-blue-200"
+                  value={formDataState.description}
+                  onChange={(e) =>
+                    handleInputChange("description", e.target.value)
+                  }
+                  placeholder="Введите подробное описание объекта"
+                />
+              </div>
               <Input
                 label="Кадастровый номер"
                 value={formDataState.number}
