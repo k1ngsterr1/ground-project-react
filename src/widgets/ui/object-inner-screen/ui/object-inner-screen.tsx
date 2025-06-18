@@ -344,6 +344,27 @@ export const ObjectInnerScreen: React.FC<ObjectInnerScreenProps> = ({
               ) : (
                 <></>
               )}
+              {myData?.role === "admin" && id && (
+                <div className="mt-4 flex items-center gap-2">
+                  <input
+                    type="text"
+                    readOnly
+                    value={window.location.origin + "/secret-object/" + id}
+                    className="border px-2 py-1 rounded text-xs w-[260px] bg-gray-100"
+                  />
+                  <Button
+                    type="button"
+                    className="bg-black text-white text-xs px-3 py-1"
+                    onClick={() => {
+                      navigator.clipboard.writeText(
+                        window.location.origin + "/secret-object/" + id
+                      );
+                    }}
+                  >
+                    Копировать ссылку с контактами
+                  </Button>
+                </div>
+              )}
             </div>
             <div className="space-y-6">
               <ObjectDescription text={data?.description} />
