@@ -216,11 +216,18 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
                 value={formDataState.number}
                 onChange={(value) => handleInputChange("number", value)}
               />
-              <Input
-                label="Примечание"
-                value={formDataState.details}
-                onChange={(value) => handleInputChange("details", value)}
-              />
+              {/* Высокий textarea для примечания */}
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Примечание
+                </label>
+                <textarea
+                  className="w-full border rounded px-3 py-2 min-h-[80px] resize-vertical focus:outline-none focus:ring-2 focus:ring-blue-200"
+                  value={formDataState.details}
+                  onChange={(e) => handleInputChange("details", e.target.value)}
+                  placeholder="Введите примечание к объекту"
+                />
+              </div>
               <Input
                 label="Цена"
                 type="number"
