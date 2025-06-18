@@ -108,7 +108,10 @@ export function Gallery({ images }: GalleryProps) {
               <img
                 src={images[currentIndex]}
                 alt={`Property image ${currentIndex + 1}`}
-                className="w-full h-full object-cover cursor-pointer"
+                className={`w-full h-full cursor-pointer ${
+                  isFullScreen ? "object-contain bg-black" : "object-cover"
+                }`}
+                style={isFullScreen ? { backgroundColor: "black" } : {}}
                 onClick={toggleFullScreen}
               />
             )}
