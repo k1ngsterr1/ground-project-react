@@ -20,6 +20,8 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { useDeleteProperty } from "@/entites/model/properties/api/use-delete-property";
 import { useState } from "react";
 import { EditPropertyModal } from "@/entites/ui/edit-modal-card/ui/edit-modal-card";
+import { FileUpload } from "@/features/ui/file-upload/ui/file-upload";
+import { useUpdateProperty } from "@/entites/model/properties/api/use-update-property";
 
 const images = Array(7).fill(image);
 
@@ -69,6 +71,52 @@ export const ObjectInnerScreen: React.FC<ObjectInnerScreenProps> = ({
   );
   const { mutate: deleteFavorite } = useDeleteFavorite();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isEditingImages, setIsEditingImages] = useState(false);
+  const [editImages, setEditImages] = useState<(string | File)[]>(
+    data?.image || []
+  );
+  const { mutate: updateProperty, isPending: isUpdating } = useUpdateProperty();
+
+  const handleFileChange = (files: File[]) => {
+    setEditImages((prev) => [...prev, ...files]);
+  };
+
+  const handleRemoveImage = (imgToRemove: string | File) => {
+    setEditImages((prev) =>
+      prev.filter((img) => {
+        if (typeof imgToRemove === "string") {
+          return img !== imgToRemove;
+        } else if (img instanceof File && imgToRemove instanceof File) {
+          return !(
+            img.name === imgToRemove.name && img.size === imgToRemove.size
+          );
+        } else if (img instanceof File || imgToRemove instanceof File) {
+          return true;
+        }
+        return true;
+      })
+    );
+  };
+
+  const handleSaveImages = () => {
+    // Prepare FormData for PATCH
+    const formData = new FormData();
+    editImages.forEach((img) => {
+      if (typeof img === "string") {
+        formData.append("image", img);
+      } else if (img instanceof File) {
+        formData.append("image", img);
+      }
+    });
+    updateProperty(
+      { id: Number(id), data: { image: editImages } as any },
+      {
+        onSuccess: () => {
+          setIsEditingImages(false);
+        },
+      }
+    );
+  };
 
   const isInFavorites = favoritesData?.some(
     (favorite) => favorite.propertyId.toString() === propertyId
@@ -160,6 +208,70 @@ export const ObjectInnerScreen: React.FC<ObjectInnerScreenProps> = ({
           <div className="grid grid-cols-1 lg:grid-cols-[1fr,520px] gap-8 mt-8">
             <div className="space-y-6 flex flex-col">
               <Gallery images={data?.image || images} />
+              {["manager", "admin"].includes(myData?.role as string) && (
+                <div className="mb-4">
+                  {!isEditingImages ? (
+                    <Button
+                      onClick={() => setIsEditingImages(true)}
+                      className="bg-blue-400 text-white text-xs mt-2"
+                    >
+                      Изменить фото
+                    </Button>
+                  ) : (
+                    <div className="flex flex-col gap-2">
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {editImages.map((img, idx) => (
+                          <div
+                            key={idx}
+                            className="relative w-24 h-24 border rounded overflow-hidden flex items-center justify-center bg-gray-100"
+                          >
+                            {typeof img === "string" ? (
+                              <img
+                                src={img}
+                                alt="property"
+                                className="object-cover w-full h-full"
+                              />
+                            ) : (
+                              <img
+                                src={URL.createObjectURL(img)}
+                                alt="new upload"
+                                className="object-cover w-full h-full"
+                              />
+                            )}
+                            <button
+                              type="button"
+                              className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
+                              onClick={() => handleRemoveImage(img)}
+                              title="Удалить изображение"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                      <FileUpload onChange={handleFileChange} />
+                      <div className="flex gap-2 mt-2">
+                        <Button
+                          onClick={handleSaveImages}
+                          disabled={isUpdating}
+                          className="bg-green-500 text-white text-xs"
+                        >
+                          Сохранить фото
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            setIsEditingImages(false);
+                            setEditImages(data?.image || []);
+                          }}
+                          className="bg-gray-300 text-black text-xs"
+                        >
+                          Отмена
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
               {["admin", "manager"].includes(myData?.role as string) ? (
                 <>
                   <span className="mt-12 text-xl">
