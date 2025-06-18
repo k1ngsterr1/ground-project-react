@@ -385,7 +385,7 @@ export const ObjectInnerScreen: React.FC<ObjectInnerScreenProps> = ({
                   </div>
                 </Button>
               </div>
-              <BrokerTab />
+              {/* <BrokerTab /> */}
             </div>
           </div>
         </div>

@@ -66,7 +66,7 @@ export const ComparisonScreen = () => {
                   <Gallery images={property.image} />
                 </div>
                 <div className="space-y-6">
-                  <BrokerTab />
+                  {/* <BrokerTab /> */}
                   <ObjectDescription text={property.description} />
                   <ObjectInfo
                     type={property.type}
