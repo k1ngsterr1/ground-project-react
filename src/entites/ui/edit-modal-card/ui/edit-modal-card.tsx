@@ -6,6 +6,10 @@ import { useUpdateProperty } from "@/entites/model/properties/api/use-update-pro
 import { useGetProperty } from "@/entites/model/properties/api/use-get-property";
 import { motion, AnimatePresence } from "framer-motion";
 import { Select } from "@/shared/ui/selector/selector";
+import {
+  useAddImageToProperty,
+  useRemoveImageFromProperty,
+} from "@/entites/model/properties/api/use-image-manage";
 
 interface EditPropertyModalProps {
   isOpen: boolean;
@@ -36,6 +40,9 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
 }) => {
   const { data: propertyData, isLoading } = useGetProperty(propertyId);
   const { mutate: updateProperty, isPending: isUpdating } = useUpdateProperty();
+  const { mutate: addImageToPropertyMutation } = useAddImageToProperty();
+  const { mutate: removeImageFromPropertyMutation } =
+    useRemoveImageFromProperty();
 
   const [formDataState, setFormData] = useState({
     name: "",
@@ -46,8 +53,9 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
     details: "",
     number: "",
     location: "",
-    image: [], // Существующие пути к фотографиям
+    image: [] as (string | File)[], // Существующие пути к фотографиям
   });
+  const [addImageUrlInput, setAddImageUrlInput] = useState("");
 
   useEffect(() => {
     if (isOpen && propertyData) {
@@ -81,14 +89,33 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
     });
   };
 
+  // Заменить одну фотографию по индексу
+  const handleReplaceImage = (idx: number, file: File) => {
+    setFormData((prev) => ({
+      ...prev,
+      image: prev.image.map((img, i) => (i === idx ? file : img)),
+    }));
+  };
+
+  // Добавить существующую ссылку через ручку add-image
+  const handleAddImageUrl = (url: string) => {
+    if (!url) return;
+    addImageToPropertyMutation({ id: propertyId, imageUrl: url });
+    setFormData((prev) => ({ ...prev, image: [...prev.image, url] }));
+  };
+
+  // Удалить существующую ссылку через ручку remove-image
   const handleRemoveImage = (imgToRemove: string | File) => {
     setFormData((prev) => ({
       ...prev,
       image: prev.image.filter((img) => {
         if (typeof imgToRemove === "string") {
+          removeImageFromPropertyMutation({
+            id: propertyId,
+            imageUrl: imgToRemove,
+          });
           return img !== imgToRemove;
         } else if (isFile(img) && isFile(imgToRemove)) {
-          // Compare File objects by name and size
           const fileImg = img as File;
           const fileToRemove = imgToRemove as File;
           return !(
@@ -96,7 +123,6 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
             fileImg.size === fileToRemove.size
           );
         } else if (isFile(img) || isFile(imgToRemove)) {
-          // Only one is a File, so not equal
           return true;
         }
         return true;
@@ -216,7 +242,7 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
                   {formDataState.image.map((img, idx) => (
                     <div
                       key={idx}
-                      className="relative w-24 h-24 border rounded overflow-hidden flex items-center justify-center bg-gray-100"
+                      className="relative w-24 h-24 border rounded overflow-hidden flex flex-col items-center justify-center bg-gray-100"
                     >
                       {typeof img === "string" ? (
                         <img
@@ -231,6 +257,16 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
                           className="object-cover w-full h-full"
                         />
                       )}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="absolute bottom-1 left-1 w-5/6 opacity-80 cursor-pointer"
+                        title="Заменить изображение"
+                        onChange={(e) => {
+                          if (e.target.files && e.target.files[0])
+                            handleReplaceImage(idx, e.target.files[0]);
+                        }}
+                      />
                       <button
                         type="button"
                         className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
@@ -241,6 +277,26 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
                       </button>
                     </div>
                   ))}
+                </div>
+                {/* Добавить по ссылке */}
+                <div className="flex gap-2 mt-2">
+                  <Input
+                    placeholder="Вставьте ссылку на изображение"
+                    value={addImageUrlInput || ""}
+                    onChange={(v) => setAddImageUrlInput(v)}
+                  />
+                  <Button
+                    type="button"
+                    className="bg-blue-400 text-white text-xs"
+                    onClick={() => {
+                      if (addImageUrlInput) {
+                        handleAddImageUrl(addImageUrlInput);
+                        setAddImageUrlInput("");
+                      }
+                    }}
+                  >
+                    Добавить по ссылке
+                  </Button>
                 </div>
               </div>
               <FileUpload onChange={handleFileChange} />

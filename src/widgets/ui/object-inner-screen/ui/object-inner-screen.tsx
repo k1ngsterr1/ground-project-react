@@ -22,6 +22,10 @@ import { useState } from "react";
 import { EditPropertyModal } from "@/entites/ui/edit-modal-card/ui/edit-modal-card";
 import { FileUpload } from "@/features/ui/file-upload/ui/file-upload";
 import { useUpdateProperty } from "@/entites/model/properties/api/use-update-property";
+import {
+  useAddImageToProperty,
+  useRemoveImageFromProperty,
+} from "@/entites/model/properties/api/use-image-manage";
 
 const images = Array(7).fill(image);
 
@@ -76,15 +80,35 @@ export const ObjectInnerScreen: React.FC<ObjectInnerScreenProps> = ({
     data?.image || []
   );
   const { mutate: updateProperty, isPending: isUpdating } = useUpdateProperty();
+  const { mutate: addImageToPropertyMutation } = useAddImageToProperty();
+  const { mutate: removeImageFromPropertyMutation } =
+    useRemoveImageFromProperty();
 
   const handleFileChange = (files: File[]) => {
     setEditImages((prev) => [...prev, ...files]);
   };
 
+  // Заменить одну фотографию по индексу
+  const handleReplaceImage = (idx: number, file: File) => {
+    setEditImages((prev) => prev.map((img, i) => (i === idx ? file : img)));
+  };
+
+  // Добавить существующую ссылку через ручку add-image
+  const handleAddImageUrl = (url: string) => {
+    if (!url) return;
+    addImageToPropertyMutation({ id: Number(id), imageUrl: url });
+  };
+
+  // Удалить существующую ссылку через ручку remove-image
   const handleRemoveImage = (imgToRemove: string | File) => {
     setEditImages((prev) =>
       prev.filter((img) => {
         if (typeof imgToRemove === "string") {
+          // Если это url, сразу дергаем ручку
+          removeImageFromPropertyMutation({
+            id: Number(id),
+            imageUrl: imgToRemove,
+          });
           return img !== imgToRemove;
         } else if (img instanceof File && imgToRemove instanceof File) {
           return !(
@@ -223,7 +247,7 @@ export const ObjectInnerScreen: React.FC<ObjectInnerScreenProps> = ({
                         {editImages.map((img, idx) => (
                           <div
                             key={idx}
-                            className="relative w-24 h-24 border rounded overflow-hidden flex items-center justify-center bg-gray-100"
+                            className="relative w-24 h-24 border rounded overflow-hidden flex flex-col items-center justify-center bg-gray-100"
                           >
                             {typeof img === "string" ? (
                               <img
@@ -238,6 +262,16 @@ export const ObjectInnerScreen: React.FC<ObjectInnerScreenProps> = ({
                                 className="object-cover w-full h-full"
                               />
                             )}
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="absolute bottom-1 left-1 w-5/6 opacity-80 cursor-pointer"
+                              title="Заменить изображение"
+                              onChange={(e) => {
+                                if (e.target.files && e.target.files[0])
+                                  handleReplaceImage(idx, e.target.files[0]);
+                              }}
+                            />
                             <button
                               type="button"
                               className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
