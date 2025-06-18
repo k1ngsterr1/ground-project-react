@@ -14,6 +14,7 @@ import ClientLayout from "./shared/layouts/client-layout.tsx";
 import { GroundCatalogueScreen } from "./widgets/ui/ground-catalogue-screen/ui/ground-catalogue-screen.tsx";
 import { AuthLayout } from "./shared/layouts/auth-layout.tsx";
 import { UserManagementPage } from "./pages/user-management-page/user-management-page.tsx";
+import { SecretObjectScreen } from "./widgets/ui/secret-object-screen/ui/secret-object-screen";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -51,6 +52,10 @@ createRoot(document.getElementById("root")!).render(
           />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegistrationPage />} />
+          <Route
+            path="/secret-object/:id"
+            element={<SecretObjectScreen isGround={false} />}
+          />
         </Routes>
       </BrowserRouter>
     </ClientLayout>
