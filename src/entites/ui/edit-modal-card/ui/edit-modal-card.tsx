@@ -19,6 +19,16 @@ const propertyTypes = [
   { value: "house", label: "Дом" },
 ];
 
+// Type guard for File
+function isFile(obj: any): obj is File {
+  return (
+    obj &&
+    typeof obj === "object" &&
+    typeof obj.name === "string" &&
+    typeof obj.size === "number"
+  );
+}
+
 export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
   isOpen,
   onClose,
@@ -71,42 +81,60 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
     });
   };
 
+  const handleRemoveImage = (imgToRemove: string | File) => {
+    setFormData((prev) => ({
+      ...prev,
+      image: prev.image.filter((img) => {
+        if (typeof imgToRemove === "string") {
+          return img !== imgToRemove;
+        } else if (isFile(img) && isFile(imgToRemove)) {
+          // Compare File objects by name and size
+          const fileImg = img as File;
+          const fileToRemove = imgToRemove as File;
+          return !(
+            fileImg.name === fileToRemove.name &&
+            fileImg.size === fileToRemove.size
+          );
+        } else if (isFile(img) || isFile(imgToRemove)) {
+          // Only one is a File, so not equal
+          return true;
+        }
+        return true;
+      }),
+    }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     // Создаём объект FormData
     const formData = new FormData();
-
     // Добавляем поля из formData в FormData
-    formData.append("name", formDataState.name); // Используйте state вместо обращения к самому объекту FormData
+    formData.append("name", formDataState.name);
     formData.append("description", formDataState.description);
     formData.append("price", formDataState.price);
     formData.append("square", formDataState.square);
     formData.append("type", formDataState.type);
     formData.append("location", formDataState.location);
-
     // Добавляем существующие ссылки как строки
     formDataState.image.forEach((img) => {
       if (typeof img === "string") {
-        formData.append("image", img); // Ссылки на изображения
+        formData.append("image", img);
       }
     });
-
     // Добавляем новые файлы
     formDataState.image.forEach((img) => {
-      if (img instanceof File) {
-        formData.append("image", img); // Новые файлы
+      if (isFile(img)) {
+        formData.append("image", img);
       }
     });
-
     // Отправляем данные на сервер
     updateProperty(
       { id: propertyId, data: formDataState as any },
       {
-        onSuccess: (response) => {
+        onSuccess: () => {
           onClose();
         },
-        onError: (error) => {},
+        onError: () => {},
       }
     );
   };
@@ -182,6 +210,39 @@ export const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
                 value={formDataState.location}
                 onChange={(value) => handleInputChange("location", value)}
               />
+              {/* Image preview and management */}
+              <div className="mb-2">
+                <div className="flex flex-wrap gap-2">
+                  {formDataState.image.map((img, idx) => (
+                    <div
+                      key={idx}
+                      className="relative w-24 h-24 border rounded overflow-hidden flex items-center justify-center bg-gray-100"
+                    >
+                      {typeof img === "string" ? (
+                        <img
+                          src={img}
+                          alt="property"
+                          className="object-cover w-full h-full"
+                        />
+                      ) : (
+                        <img
+                          src={URL.createObjectURL(img)}
+                          alt="new upload"
+                          className="object-cover w-full h-full"
+                        />
+                      )}
+                      <button
+                        type="button"
+                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
+                        onClick={() => handleRemoveImage(img)}
+                        title="Удалить изображение"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
               <FileUpload onChange={handleFileChange} />
               <div className="flex justify-end space-x-4 mt-4">
                 <Button onClick={onClose} type="button" className="px-4 py-2">
