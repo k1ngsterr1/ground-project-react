@@ -156,7 +156,6 @@ export const SecretObjectScreen: React.FC<SecretObjectScreenProps> = ({
           <div className="grid grid-cols-1 lg:grid-cols-[1fr,520px] gap-8 mt-8">
             <div className="space-y-6 flex flex-col">
               <Gallery images={data?.image || images} />
-              <BrokerTab />
             </div>
             <div className="space-y-6">
               <ObjectDescription text={data?.description} />
