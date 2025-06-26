@@ -350,7 +350,7 @@ export const ObjectInnerScreen: React.FC<ObjectInnerScreenProps> = ({
                     type="text"
                     readOnly
                     value={window.location.origin + "/secret-object/" + id}
-                    className="border px-2 py-1 rounded text-xs w-[260px] bg-gray-100"
+                    className="border px-2 py-1 rounded text-xs w-[320px] bg-gray-100"
                   />
                   <Button
                     type="button"
